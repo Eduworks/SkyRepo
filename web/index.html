@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>SkyManager</title>
+  <link rel="stylesheet" href="css/foundation.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/cube.css" />
+  <link rel="stylesheet" href="css/animate.css" />
+  <script src="js/vendor/custom.modernizr.js"></script>
+</head>
+<body style="background-color:gray">
+    <nav class="top-bar" data-topbar role="navigation">
+      <ul class="title-area">
+        <li class="name" >
+            <a href="#" onclick="$('.topLevel').hide();$('#main').show()"><h3 style="color:white;">&nbsp;&nbsp;SkyManager
+            <small style="color:white;">by Eduworks</small>&nbsp;&nbsp;</h3></a>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+
+      <section class="top-bar-section">
+        <ul class="right">       
+            <li><a href="#" onclick="$('.topLevel').hide();$('#key').show()">My Identity</a></li><li class="divider"></li>    
+            <li><a href="#" onclick="$('.topLevel').hide();$('#contacts').show()">My Contacts</a></li><li class="divider"></li>
+            <li><a href="#" onclick="$('.topLevel').hide();$('#servers').show()">My Servers</a></li><li class="divider"></li>     
+        </ul>
+
+        <ul class="left"><li class="divider"></li>
+            <li class="has-dropdown">
+                <a href="#">SkyId</a>
+                <ul class="dropdown">
+                    <li><a href="#" onclick="$('#skyIdLoginModal').foundation('reveal', 'open');$('#skyIdLoginModalUsername').focus();">Login</a></li><li class="divider"></li>
+                    <li><a href="#" onclick="$('#skyIdCreateModal').foundation('reveal', 'open');$('#skyIdCreateModalUsername').focus();">Create Account</a></li><li class="divider"></li>
+                </ul>
+            </li>
+            <li class="has-dropdown">
+                <a href="#">SkyRepo</a>
+                <ul class="dropdown">
+                    <li><a href="#" onclick="$('.topLevel').hide();$('#data').show();$('.dataMenu').hide();$('.myData').show();privateDataSearch();">Search</a></li><li class="divider"></li>
+                    <li><a href="#" onclick="$('.topLevel').hide();$('#data').show();$('.dataMenu').hide();$('.newData').show();">Create</a></li><li class="divider"></li>
+                    <li class="has-dropdown">
+                        <a href="#">Examples</a>
+                        <ul class="dropdown">
+                            <li><a href="#" onclick="alert('Not yet implemented.');">Secure File Store</a></li><li class="divider"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-dropdown">
+                <a href="#">SkyReasoning</a>
+                <ul class="dropdown">
+                    <li><a href="#" onclick="alert('Not yet implemented.');">Query</a></li><li class="divider"></li>
+                    <li><a href="#" onclick="alert('Not yet implemented.');">Rules</a></li><li class="divider"></li>
+                </ul>
+            </li>
+        </ul>
+      </section>
+    </nav>
+    <div id="loading">
+        <div class="row" style="padding-top:100px">
+            <div class="large-5 columns large-centered panel radius" style="">
+                Loading...
+            </div>
+        </div>
+    </div>
+    <div id="main" class="topLevel" style="display:none;">
+        <div class="row" style="padding-top:50px">
+            <div class="large-7 columns large-centered panel radius" style="margin-bottom:0px;padding-bottom:0px">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <h3>Public/Private Repository</h3>
+                        <p>SkyRepo is a repository where all data is open to the public and globally shared, without being centralized, and security is done entirely through strong encryption practices.</p>
+                        <h3>User Identity</h3>
+                        <p>Because of security, things work differently in an encrypted world. You are identified by a Public Key (PK), here called an Alias, and your password is a long sequence of characters called a Private Key (PPK, for Public/Private Key), or just 'Key'. The concept of usernames and passwords does not exist here.</p>
+                        <h3>User Friendliness</h3>
+                        <p>The goal of SkyRepo is to make strong encryption practices easy to understand, and provide a template and framework for public/private repository models.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:0px;padding-bottom:50px">
+            <div class="large-7 columns large-centered" style="margin-bottom:20px">
+            </div>
+        </div>  
+    </div>
+    <div id="servers" class="topLevel" style="display:none;">
+        <div class="row" style="padding-top:50px">
+            <div class="large-7 columns large-centered panel radius" style="margin-bottom:0px;padding-bottom:0px">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <form><button class="right tiny" style="margin-top:3px">Add</button><input class="right" style="width:200px" type="url"></form>
+                        <h3>Servers</h3>
+                        <hr>
+                        <a class="button right tiny" style="margin-left:5px">Disconnect</a>
+                        <h5>Eduworks (Home)<br><small>http://skyrepo.eduworks.com</small><br><small>SkyId, SkyRepo, SkyReasoning</small></h5>
+                        <hr>
+                        <a class="button right tiny" style="margin-left:5px">Disconnect</a>
+                        <a class="button right tiny" style="margin-left:5px">Make Home</a>
+                        <h5>ADL<br><small>http://skyrepo.adlnet.gov</small><br><small>SkyId, SkyRepo, SkyReasoning</small></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:0px;padding-bottom:50px">
+            <div class="large-7 columns large-centered" style="margin-bottom:20px">
+            </div>
+        </div>  
+    </div>
+    <div id="contacts" class="topLevel" style="display:none;">
+        <div class="row" style="padding-top:50px">
+            <div class="large-7 columns large-centered panel radius" style="margin-bottom:0px;padding-bottom:0px">
+                <div class="row">
+                    <div class="small-12 columns">
+                        <form><button class="right tiny" style="margin-top:3px">Filter</button><input class="right" style="width:200px" type="text"></form>
+                        <h3>Contacts</h3>
+                        <div class="contactsList">
+                            <hr>
+                            <a class="button right tiny" style="margin-left:5px">Lookup</a>
+                            <a class="button right tiny" style="margin-left:5px">Forget</a>
+                            <h5><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/48px-User_icon_2.svg.png"><span title="PK HERE" contenteditable="true">Me</span><br><small>Home: http://skyrepo.eduworks.com</small></h5>
+                            <hr>
+                            <a class="button right tiny" style="margin-left:5px">Lookup</a>
+                            <a class="button right tiny" style="margin-left:5px">Forget</a>
+                            <h5><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/48px-User_icon_2.svg.png"><span title="PK HERE" contenteditable="true">Bob</span><br><small>Home: http://skyrepo.adlnet.gov</small></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:0px;padding-bottom:50px">
+            <div class="large-7 columns large-centered" style="margin-bottom:20px">
+            </div>
+        </div>  
+    </div>
+    <div id="key" class="topLevel" style="display:none;"> 
+        <div class="row" style="padding-top:50px">
+            <div class="large-6 columns">
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns">
+                        <h3 title="Each Alias also contains a Key.">Aliases<br><small>These will be cleared upon every page refresh.</small></h3>
+                        <p class="activeKeys">None found.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="large-5 columns">
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns">
+                        <h3>Import Aliases
+                            <br>
+                            <small>Importing an alias will also import its key.</small>
+                            <br>
+                            <small>Select one or more aliases to import.</small>
+                        </h3>
+                        <form id="addKeyForm" name="skyRepo Keys">
+                            <input id="addKeyPpk" multiple type="file" accept=".pem" placeholder="Private Key">
+                        </form>
+                        <a class="button right" onclick="skyrepo.activateKey($('#addKeyPpk')[0].files,addKeyCallback);" value="Add">Import</a>
+                    </div>
+                </div>
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns">
+                        <h3>Generate an Alias
+                            <br>
+                            <small>This may take a couple seconds.</small>
+                            <br>
+                            <small>We will download the alias to your computer.</small>
+                        </h3>                        
+                        <a class="button right" onclick="skyrepo.generateKey(generateKeyCallback);" value="Add">Generate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="data" class="topLevel" style="display:none;"> 
+        <div class="row" style="padding-top:50px">
+            <div class="large-3 columns">
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns">
+                        <h3>Aliases</h3>
+                        <p class="activeKeys">None found.</p>
+                    </div>
+                </div>
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns" style="">
+                        <h3 class="">Log</h3>          
+                        <p id="dataLog" style="width:100%;height:300px;overflow-y:scroll;"><span>Initialized</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="large-8 columns">
+                <div class="row" style="margin-top:0px;padding-bottom:0px">
+                    <div class="large-12 columns large-centered" style="margin-bottom:0px">
+                        <a class="label" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);" onclick="$('.dataMenu').hide();$('.myData').show();privateDataSearch();">Search</a>
+                        <a class="label" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);" onclick="$('.dataMenu').hide();$('.newData').show();">Edit/View</a>
+                    </div>
+                </div>
+                <div class="dataMenu myData row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:0px">
+                    <div class="small-12 columns">
+                        <h3>Search
+                            <small class="right">
+                                Search:<input id="privateDataSearchText" style="margin-top:10px;padding:0px;" type="text">
+                            </small>                            
+                        </h3>
+                        <span>Search Skyrepo using the box to the right.</span>
+                        <div id="searchResultsPrivate" class="vertStack">
+                        </div>
+                    </div>                    
+                </div> 
+                <div class="dataMenu newData dataRecepticle row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:0px;display:none">
+                    <div id="datum" class="small-12 columns">
+                    </div>
+                </div>
+                <div class="dataMenu row newData" style="margin-top:0px;padding-bottom:50px;display:none">
+                    <div class="large-12 columns large-centered" style="margin-bottom:20px">
+                        <a class="right label" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="foot">
+        <span>
+            <img style="height:40px;top:55px;margin:0px;padding:0px" src="img/eduworks-logo.png"> 
+            © 2015 Eduworks Corporation. All Rights Reserved.&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="http://eduworks.com/terms-of-use-privacy-policy/">Terms of Use &amp; Privacy Policy </a>
+        </span> 
+    </div>
+    <div id="keyModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
+        <p>The alias has been created and downloaded to your computer.</p>
+        <a id="cancel" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Continue</a>
+    </div>
+    <div id="skyIdLoginModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
+        <h3>Login to SkyId</h3>
+        <form id="skyManagerLogin">
+            <select id="skyIdLoginModalServer" class="serverSelect">
+                <option value="http://skyrepo.eduworks.com" selected>Eduworks (Home)</option>
+                <option value="http://skyrepo.adlnet.gov">ADL</option>
+            </select>
+            <label>Login</label>
+            <input type="text" id="skyIdLoginModalUsername">
+            <label>Password</label>
+            <input type="password" id="skyIdLoginModalPassword">
+        </form>
+        <a id="loginLogin" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="">Login</a>
+        <a id="loginSkip" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Cancel</a>
+    </div>
+    <div id="skyIdCreateModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
+        <h3>Create SkyId Account</h3>
+        <form id="skyManagerCreate">
+            <select id="skyIdCreateModalServer" class="serverSelect">
+                <option value="http://skyrepo.eduworks.com" selected>Eduworks (Home)</option>
+                <option value="http://skyrepo.adlnet.gov">ADL</option>
+            </select>
+            <label>Login</label>
+            <input type="text" id="skyIdCreateModalUsername">
+            <label>Password</label>
+            <input type="password" id="skyIdCreateModalPassword">
+        </form>
+        <a id="loginLogin" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="">Create</a>
+        <a id="loginSkip" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Cancel</a>
+    </div>
+    <div id="addFieldModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
+        <h3>New Field</h3>
+        <span class="objectProperties">My new field:</span><br>
+        <a id="addFieldModalNameSelect" class="objectProperties button right">...</a>
+        <input id="addFieldModalName" class="objectProperties" type="text" style="width:400px;" placeholder="Field Name"/>
+        <br>Is a(n):<br>
+        <a id="addFieldModalText" class="radius button">Text</a>
+        <a id="addFieldModalArray" class="radius button">Array</a>
+        <a id="addFieldModalObject" class="radius button">Object</a>
+        <a id="addFieldModalDecal" class="radius button">Decal</a>
+        <a id="cancel" class="radius button right" onclick="$('#addFieldModal').foundation('reveal', 'close');">Cancel</a>
+    </div>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
+    <script src="js/foundation/foundation.js"></script>
+    <script src="js/foundation/foundation.reveal.js"></script>
+    <script src="js/foundation/foundation.joyride.js"></script>
+    <script src="js/foundation/foundation.topbar.js"></script>
+    <script src="forge/forge.bundle.js"></script>
+    <script src="js/base64.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/skyrepo.js"></script>
+    <script src="settings/settings.js"></script>
+    <script src="js/business.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/keyGeneration.js"></script>
+    <script src="js/dataEdit.js"></script>
+    <script src="js/vendor/i18next-1.10.1.js"></script>
+<script>
+  $(document).foundation();
+  $("#loading").hide();
+  $("#main").show();
+</script>
+</body>
+</html>

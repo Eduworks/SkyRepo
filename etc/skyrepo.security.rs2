@@ -1,0 +1,54 @@
+type=#add(a="@",b="type");
+owner=#add(a="@",b="owner");
+owner=#toObject(obj="@obj").getByParam(param=owner).replace(replace="-----BEGIN PUBLIC KEY-----",with="").replace(replace="-----END PUBLIC KEY-----",with="").replace(regex="true",replace="\r?\n",with="");
+
+encryptedTypes=#object(
+	a="http://skyrepo.eduworks.com/EncryptedValue",
+	b="EncryptedValue"
+).valueSet();
+
+filterResultObject=#if(
+	operator=encryptedTypes.has(has=#toObject(obj="@obj").getByParam(param=type)),
+	operand="true",
+	eq=#if(
+		operator=#signatureSheet().has(has=owner),
+		operand="true",
+		eq=#toObject(obj="@obj").cforEach(
+			paramName="key",
+			valueName="obj",
+			threaded="false",
+			op=#filterResults()
+		)
+	),
+	ne=#toObject(obj="@obj").cforEach(
+		paramName="key",
+		valueName="obj",
+		threaded="false",
+		op=#filterResults()
+	)
+);
+
+filterResultArray=#toArray(obj="@obj").cforEach(
+	paramName="obj",
+	threaded="false",
+	array="true",
+	op=#filterResults()
+);
+
+filterResults=#if(
+	operator="@obj",
+	operand="",
+	ne=#if(
+		operator=#startsWith(obj="@obj",with="{"),
+		operand="true",
+		eq=filterResultObject,
+		ne=#if(
+			operator=#startsWith(obj="@obj",with="["),
+			operand="true",
+			eq=filterResultArray,
+			ne="@obj"			
+		)
+	)
+);
+
+#filterResults=filterResults;

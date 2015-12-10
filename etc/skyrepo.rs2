@@ -1,0 +1,79 @@
+//Copyright Eduworks Corporation
+//All Rights Reserved
+
+query=#object(
+	type=#split(obj="@urlRemainder",split="/").getIndex(index="1"),
+	id=#split(obj="@urlRemainder",split="/").getIndex(index="2"),
+	version=#split(obj="@urlRemainder",split="/").getIndex(index="3")
+);
+
+urlBase=#add(
+	a="http://localhost:9200"
+);
+
+decalGetUrl=#add(
+	a=urlBase,
+	b="/data/",
+	c=query.cget(type=""),
+	f="/",
+	g=query.cget(id=""),
+	h=#if(
+		operator=query.cget(version=""),
+		operand="",
+		ne=#add(
+			a="?version=",
+			b=query.cget(version=""),
+			c="&version_type=external"
+		)
+	)
+);
+
+decalSaveUrl=#add(
+	a=urlBase,
+	b="/data/",
+	c=query.cget(type=""),
+	d="/",
+	g=query.cget(id=""),
+	h="?version=",
+	i=query.cget(version=""),
+	j="&version_type=external"
+);
+
+postData=#fileFromDatastream(name="data");
+
+postObject=postData.fileToString().toObject();
+
+decalSave=#if(
+	operator=postData.count(),
+	operand="1",
+	eq=#object(
+		z=postData.getIndex(index="0").fileToString().toObject().toDotAndArrayNotationObject().debug().httpPost(
+			url=decalSaveUrl,
+			contentType="application/json",
+			multipart="false"
+		)
+	)
+).debug();
+
+decalGet=decalGetUrl.httpGet().toObject().debug().cgetByParam(param="_source").fromDotAndArrayNotationObject();
+
+decal=#object(
+	a=decalSave,
+	b=decalGet.filterResults()
+).cget(b="").displayJson(_collapse="true");
+
+data=decal.call(type="data");
+/data=data;
+
+search=#add(
+	a=urlBase,
+	b="/_search",
+	h="?q=",
+	i=postData.fileToString()
+).httpGet().toObject().cget(hits="").cget(hits="").cforEach(
+	paramName="obj",
+	array="true",
+	op=#toObject(obj="@obj").getByParam(param="_source").fromDotAndArrayNotationObject()
+).filterResults().displayJson(_collapse="true");
+
+/sky/repo/search=search;
