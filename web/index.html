@@ -15,8 +15,7 @@
     <nav class="top-bar" data-topbar role="navigation">
       <ul class="title-area">
         <li class="name" >
-            <a href="#" onclick="$('.topLevel').hide();$('#main').show()"><h3 style="color:white;">&nbsp;&nbsp;SkyManager
-            <small style="color:white;">by Eduworks</small>&nbsp;&nbsp;</h3></a>
+            <a href="#" onclick="$('.topLevel').hide();$('#main').show()"><h3 style="color:white;">&nbsp;&nbsp;SkyManager&nbsp;&nbsp;</h3></a>
         </li>
         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
       </ul>
@@ -32,19 +31,21 @@
             <li class="has-dropdown">
                 <a href="#">SkyId</a>
                 <ul class="dropdown">
-                    <li><a href="#" onclick="$('#skyIdLoginModal').foundation('reveal', 'open');$('#skyIdLoginModalUsername').focus();">Login</a></li><li class="divider"></li>
-                    <li><a href="#" onclick="$('#skyIdCreateModal').foundation('reveal', 'open');$('#skyIdCreateModalUsername').focus();">Create Account</a></li><li class="divider"></li>
+                    <li><a href="#" id="skyIdLogin" onclick="$('#skyIdLoginModal').foundation('reveal', 'open');$('#skyIdLoginModalUsername').focus();">Login</a></li><li class="divider"></li>
+                    <li><a href="#" id="skyIdCreate" onclick="$('#skyIdCreateModal').foundation('reveal', 'open');$('#skyIdCreateModalUsername').focus();">Create Account</a></li><li class="divider"></li>
+                    <li><a href="#" id="skyIdSave" onclick="saveCredentials();" style="display:none;">Save</a></li><li class="divider"></li>
+                    <li><a href="#" id="skyIdLogout" onclick="logout();" style="display:none;">Logout</a></li><li class="divider"></li>
                 </ul>
             </li>
             <li class="has-dropdown">
                 <a href="#">SkyRepo</a>
                 <ul class="dropdown">
                     <li><a href="#" onclick="$('.topLevel').hide();$('#data').show();$('.dataMenu').hide();$('.myData').show();privateDataSearch();">Search</a></li><li class="divider"></li>
-                    <li><a href="#" onclick="$('.topLevel').hide();$('#data').show();$('.dataMenu').hide();$('.newData').show();">Create</a></li><li class="divider"></li>
+                    <li><a href="#" onclick="$('.topLevel').hide();$('#data').show();$('.dataMenu').hide();$('.newData').show();dataEdit(defaultObject());">Create</a></li><li class="divider"></li>
                     <li class="has-dropdown">
                         <a href="#">Examples</a>
                         <ul class="dropdown">
-                            <li><a href="#" onclick="alert('Not yet implemented.');">Secure File Store</a></li><li class="divider"></li>
+                            <li><a href="#" onclick="$('.topLevel').hide();$('#fileManager').show();fileManagerSearch();">Secure File Store</a></li><li class="divider"></li>
                         </ul>
                     </li>
                 </ul>
@@ -74,7 +75,7 @@
                         <h3>Public/Private Repository</h3>
                         <p>SkyRepo is a repository where all data is open to the public and globally shared, without being centralized, and security is done entirely through strong encryption practices.</p>
                         <h3>User Identity</h3>
-                        <p>Because of security, things work differently in an encrypted world. You are identified by a Public Key (PK), here called an Alias, and your password is a long sequence of characters called a Private Key (PPK, for Public/Private Key), or just 'Key'. The concept of usernames and passwords does not exist here.</p>
+                        <p>Because of security, things work differently in an encrypted world. You are identified by a Public Key (PK), here called an Alias, and your password is a long sequence of characters called a Private Key (PPK, for Public/Private Key), or just 'Key'. Usernames and Passwords are only used to retreive these encryption credentials.</p>
                         <h3>User Friendliness</h3>
                         <p>The goal of SkyRepo is to make strong encryption practices easy to understand, and provide a template and framework for public/private repository models.</p>
                     </div>
@@ -157,7 +158,7 @@
                         <form id="addKeyForm" name="skyRepo Keys">
                             <input id="addKeyPpk" multiple type="file" accept=".pem" placeholder="Private Key">
                         </form>
-                        <a class="button right" onclick="skyrepo.activateKey($('#addKeyPpk')[0].files,addKeyCallback);" value="Add">Import</a>
+                        <a class="button right" onclick="skycrypto.activateKey($('#addKeyPpk')[0].files,addKeyCallback);if (skyid.token != undefined)$('#skyIdSaveModal').foundation('reveal', 'open');" value="Add">Import</a>
                     </div>
                 </div>
                 <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
@@ -168,7 +169,7 @@
                             <br>
                             <small>We will download the alias to your computer.</small>
                         </h3>                        
-                        <a class="button right" onclick="skyrepo.generateKey(generateKeyCallback);" value="Add">Generate</a>
+                        <a class="button right" onclick="skycrypto.generateKey(generateKeyCallback);" value="Add">Generate</a>
                     </div>
                 </div>
             </div>
@@ -221,15 +222,55 @@
             </div>
         </div>
     </div>
+    <div id="fileManager" class="topLevel" style="display:none;"> 
+        <div class="row" style="padding-top:50px">
+            <div class="large-3 columns">
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns">
+                        <h3>Aliases</h3>
+                        <p class="activeKeys">None found.</p>
+                    </div>
+                </div>
+                <div class="row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:20px">
+                    <div class="small-12 columns" style="padding-right:0px">   
+                        <div class="" style="margin-bottom:0px">Encrypt Uploaded Files: </div>
+                        <span class="switch" style="margin-bottom:0px">
+                            <input id="fileManagerEncrypted" type="checkbox" checked style="margin-bottom:0px;">
+                            <label for="fileManagerEncrypted" style="margin-bottom:0px;"></label>
+                        </span>
+                        <div class="" style="margin-bottom:0px">Search Unencrypted Files: </div>
+                        <span class="switch" style="margin-bottom:0px">
+                            <input id="fileManagerPublic" type="checkbox" checked style="margin-bottom:0px;">
+                            <label for="fileManagerPublic" style="margin-bottom:0px;"></label>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="large-1 columns">
+            </div>
+            <div class="large-8 columns">
+                <div id="dragTarget" class=" row panel radius" style="box-shadow:6px 0px 4px rgba(0,0,0,.4);margin-bottom:0px">
+                    <div class="small-12 columns">
+                        <h3>
+                            <span id="fileManagerLabel">File Manager</span>
+                            <small class="right">
+                                Search:<input id="fileManagerSearchText" style="margin-top:10px;padding:0px;" type="text">
+                            </small>
+                            <br>   
+                            <small>Drag and Drop to upload files.</small>                        
+                        </h3>
+                        <div id="fileManagerResults" class="vertStack">
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="foot">
         <span>
             <img style="height:40px;top:55px;margin:0px;padding:0px" src="img/eduworks-logo.png"> 
-            © 2015 Eduworks Corporation. Licensed under the Apache License, Version 2.0.
+            © 2015 Eduworks Corporation and contributing members. Licensed under the Apache License, Version 2.0.
         </span> 
-    </div>
-    <div id="keyModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
-        <p>The alias has been created and downloaded to your computer.</p>
-        <a id="cancel" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Continue</a>
     </div>
     <div id="skyIdLoginModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
         <h3>Login to SkyId</h3>
@@ -244,7 +285,7 @@
             <input type="password" id="skyIdLoginModalPassword">
         </form>
         <a id="loginLogin" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="">Login</a>
-        <a id="loginSkip" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Cancel</a>
+        <a id="loginSkip" style="margin-top:1rem" class="radius button right" onclick="$('#skyIdLoginModal').foundation('reveal', 'close');">Cancel</a>
     </div>
     <div id="skyIdCreateModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
         <h3>Create SkyId Account</h3>
@@ -258,8 +299,14 @@
             <label>Password</label>
             <input type="password" id="skyIdCreateModalPassword">
         </form>
-        <a id="loginLogin" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="">Create</a>
-        <a id="loginSkip" style="margin-top:1rem" class="radius button right" onclick="$('#keyModal').foundation('reveal', 'close');">Cancel</a>
+        <a id="createCreate" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="">Create</a>
+        <a id="createSkip" style="margin-top:1rem" class="radius button right" onclick="$('#skyIdCreateModal').foundation('reveal', 'close');">Cancel</a>
+    </div>
+    <div id="skyIdSaveModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
+        <h3>Your credentials have changed.</h3>
+        <p>Would you like to save these new credentials to the cloud? Or would you like to keep them local?<br><small>Note: If you save at any point after this, we will save all credentials in the cloud.</small></p>
+        <a id="saveSave" style="margin-top:1rem;margin-left:5px" class="radius button right" onclick="saveCredentials();$('#skyIdSaveModal').foundation('reveal', 'close');">Save Credentials</a>
+        <a id="saveSkip" style="margin-top:1rem" class="radius button right" onclick="$('#skyIdSaveModal').foundation('reveal', 'close');">Keep Locally</a>
     </div>
     <div id="addFieldModal" class="reveal-modal small radius" data-reveal="" style="width:600px;display: none; opacity: 1; visibility: hidden; top: 50px;">
         <h3>New Field</h3>
@@ -282,13 +329,17 @@
     <script src="forge/forge.bundle.js"></script>
     <script src="js/base64.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/skycrypto.js"></script>
     <script src="js/skyrepo.js"></script>
+    <script src="js/skyid.js"></script>
     <script src="settings/settings.js"></script>
-    <script src="js/business.js"></script>
-    <script src="js/interface.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/keyGeneration.js"></script>
-    <script src="js/dataEdit.js"></script>
+    <script src="js/uiLog.js"></script>
+    <script src="js/uiGeneral.js"></script>
+    <script src="js/uiFileManager.js"></script>
+    <script src="js/uiId.js"></script>
+    <script src="js/uiSearch.js"></script>
+    <script src="js/uiIdentity.js"></script>
+    <script src="js/uiCreate.js"></script>
     <script src="js/vendor/i18next-1.10.1.js"></script>
 <script>
   $(document).foundation();

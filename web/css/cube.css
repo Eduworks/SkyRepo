@@ -281,6 +281,14 @@ TOM Tile Test - Taken from russel's app.css
 	background-image: url(../images/app-review-back.png);
 }
 
+.tile .app.document .front {
+	background-image: url(../images/file-document-back.png);
+}
+
+.tile .app.document .back {
+	background-image: url(../images/app-download-back.png);
+}
+
 .tile .app.data .front {
 	background-image: url(../images/app-designer-front.png);
 }

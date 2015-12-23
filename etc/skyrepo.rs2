@@ -1,5 +1,5 @@
-//Copyright Eduworks Corporation
-//All Rights Reserved
+//Copyright 2015 Eduworks Corporation and other contributing parties.
+//Licensed under an Apache 2.0 License. See LICENSE in the root directory.
 
 query=#object(
 	type=#split(obj="@urlRemainder",split="/").getIndex(index="1"),
@@ -7,73 +7,30 @@ query=#object(
 	version=#split(obj="@urlRemainder",split="/").getIndex(index="3")
 );
 
-urlBase=#add(
-	a="http://localhost:9200"
-);
-
-decalGetUrl=#add(
-	a=urlBase,
-	b="/data/",
-	c=query.cget(type=""),
-	f="/",
-	g=query.cget(id=""),
-	h=#if(
-		operator=query.cget(version=""),
-		operand="",
-		ne=#add(
-			a="?version=",
-			b=query.cget(version=""),
-			c="&version_type=external"
-		)
-	)
-);
-
-decalSaveUrl=#add(
-	a=urlBase,
-	b="/data/",
-	c=query.cget(type=""),
-	d="/",
-	g=query.cget(id=""),
-	h="?version=",
-	i=query.cget(version=""),
-	j="&version_type=external"
-);
-
 postData=#fileFromDatastream(name="data");
 
 postObject=postData.fileToString().toObject();
 
-decalSave=#if(
-	operator=postData.count(),
-	operand="1",
-	eq=#object(
-		z=postData.getIndex(index="0").fileToString().toObject().toDotAndArrayNotationObject().debug().httpPost(
-			url=decalSaveUrl,
-			contentType="application/json",
-			multipart="false"
-		)
-	)
-).debug();
+get=#skyrepoGet(
+	type=query.cget(type=""),
+	id=query.cget(id=""),
+	version=query.cget(version="")
+);
 
-decalGet=decalGetUrl.httpGet().toObject().debug().cgetByParam(param="_source").fromDotAndArrayNotationObject();
+save=postObject.skyrepoPut(
+	type=query.cget(type=""),
+	id=query.cget(id=""),
+	version=query.cget(version="")
+);
 
-decal=#object(
-	a=decalSave,
-	b=decalGet.filterResults()
-).cget(b="").displayJson(_collapse="true");
+saveOrGet=#object(
+	a=save,
+	b=get
+).cget(b="");
 
-data=decal.call(type="data");
+data=saveOrGet.call(type="data").displayJson(_collapse="true");
 /data=data;
 
-search=#add(
-	a=urlBase,
-	b="/_search",
-	h="?q=",
-	i=postData.fileToString()
-).httpGet().toObject().cget(hits="").cget(hits="").cforEach(
-	paramName="obj",
-	array="true",
-	op=#toObject(obj="@obj").getByParam(param="_source").fromDotAndArrayNotationObject()
-).filterResults().displayJson(_collapse="true");
+search=#skyrepoSearch(q=postData.fileToString());
 
 /sky/repo/search=search;

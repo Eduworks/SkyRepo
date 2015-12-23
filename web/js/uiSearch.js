@@ -12,8 +12,11 @@ function privateDataSearch()
             {
                 $("#searchResultsPrivate").append(tile);
                 var t = $("#searchResultsPrivate").children(".tile").last();
-                t.find(".title").text(obj[index]["@type"]);
-                t.attr("data",JSON.stringify(obj[index]));
+                var type = obj[index]["@type"];
+                type = type.split("/");
+                type = type[type.length-1];
+                t.find(".title").text(type);
+                t.attr("id",obj[index]["@id"]);
             }
         },
         function(obj){
@@ -26,11 +29,7 @@ $( ".myData" ).on( "keyup", "#privateDataSearchText",function(obj){
 });
 
 $( "#searchResultsPrivate" ).on( "click", ".tile",function(){
-    $('#datum').remove();
-    if ($('#datum').length == 0)
-        $(".dataRecepticle").append("<div id='datum'></div>");
-    replaceField($('#datum'),JSON.parse($(this).attr("data")));
-    $('#datum').children("div").css("overflow-x","inherit");
-    $('.dataMenu').hide();
-    $('.newData').show();
+    skyrepo.get($(this).attr("id"),function(obj){
+        dataEdit(obj);
+    });    
 });

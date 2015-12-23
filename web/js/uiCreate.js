@@ -107,6 +107,17 @@ $( "#addFieldModal" ).on( "click", "#addFieldModalDecal",function(){
     $('#addFieldModal').foundation('reveal', 'close');
 });
 
+function dataEdit(data)
+{    
+    $('#datum').remove();
+    if ($('#datum').length == 0)
+        $(".dataRecepticle").append("<div id='datum'></div>");
+    replaceField($('#datum'),data);
+    $('#datum').children("div").css("overflow-x","inherit");
+    $('.dataMenu').hide();
+    $('.newData').show();
+}
+
 function serializeField(field,child)
 {
     if (field.children("span").length == 1)
@@ -135,7 +146,7 @@ function serializeField(field,child)
 
 function encryptField(field,text)
 {
-    if (skyrepo.selectedPpk == "")
+    if (skycrypto.selectedPpk == "")
     {
         log("Select a key.","You have no keys available to encrypt with.");
         return;
@@ -144,15 +155,15 @@ function encryptField(field,text)
     var fieldx = field.attr("field");
     var id = $("[field='@id']").children("span").text();
     log("Generating Secret","Generating Symmetric Key for AES-256-CTR.");
-    var cryptoKey = skyrepo.newSymmetricKey();
+    var cryptoKey = skycrypto.newSymmetricKey();
     log("Encoding Secret","Encoding Tamper-proof secret using field and ID.");
     var cryptoWrapper = JSON.stringify({field:fieldx,id:id,key:cryptoKey});
     log("Encrypting Secret","Encoding Secret using " + $("#data .activeKeys").find(".success").text()+"\nThis will allow only those with the appropriate PPK access to the Secret.");
-    var encryptedKey = skyrepo.encryptAsymmetric(cryptoWrapper);
+    var encryptedKey = skycrypto.encryptAsymmetric(cryptoWrapper);
     log("Generating IV","Generating Initialization Vector using field and ID.");
     var iv = JSON.stringify({field:fieldx,id:id});
     log("Encrypting Data","Encoding Field using AES-256-CTR.");
-    var encryptedText = skyrepo.encryptSymmetric(cryptoKey,iv,text);
+    var encryptedText = skycrypto.encryptSymmetric(cryptoKey,iv,text);
     
     var obj = {        
         secret:encryptedKey,
@@ -160,7 +171,7 @@ function encryptField(field,text)
     };
     obj["@context"]=skyrepo.const.ebac.context;
     obj["@type"]=skyrepo.const.ebac.encryptedValue;
-    obj["@owner"]=skyrepo.pkText();
+    obj["@owner"]=skycrypto.pkText();
     if (field.find("[field='@id']").length > 0)
         obj["@id"]=field.find("[field='@id']").children("span").text();
     replaceField(field,obj);
@@ -168,7 +179,7 @@ function encryptField(field,text)
 
 function signField(field,obj)
 {
-    if (skyrepo.selectedPpk == "")
+    if (skycrypto.selectedPpk == "")
     {
         log("Select a key.","You have no keys available to encrypt with.");
         return;
@@ -181,10 +192,10 @@ function signField(field,obj)
     var copy = JSON.parse(JSON.stringify(obj));
     delete copy["@signature"];
     delete copy["@owner"];
-    var encryptedText = skyrepo.signAsymmetric(stringifyJSON(copy));
+    var encryptedText = skycrypto.signAsymmetric(stringifyJSON(copy));
     
     obj["@signature"]=encryptedText;
-    obj["@owner"]=skyrepo.pkText();
+    obj["@owner"]=skycrypto.pkText();
     
     replaceField(field,obj);
 }
@@ -324,29 +335,30 @@ function decryptField(field)
 {
     var id = field.find("[field='@id']").children("span").text();
     var fld = field.attr("field");
-    var selectedPpk = skyrepo.selectedPpk;
+    var selectedPpk = skycrypto.selectedPpk;
     log("Searching for Secret","Attempting to decrypt each secret using all available keys.");
-    for (var ppkIndex in skyrepo.ppks)
+    var ppkIndex = 0;
+    for (var ppk in skycrypto.ppks)
     {
-        skyrepo.selectedPpk = skyrepo.ppks[ppkIndex];
+        skycrypto.selectedPpk = ppk;
         for (var secretIndex = 0;secretIndex < field.children("div").children("[field='secret']").children("span").length;secretIndex++)
         {
-            log("PPK "+ppkIndex+" vs Secret "+secretIndex,"Trying a PPK/Secret pair.");
+            log("PPK " + ppkIndex++ + " vs Secret "+secretIndex,"Trying a PPK/Secret pair.");
             var text = field.children("div").children("[field='secret']").children("span").eq(secretIndex).text().trim();
             try
             {
-                var decryptedString = skyrepo.decryptAsymmetric(text);
+                var decryptedString = skycrypto.decryptAsymmetric(text);
                 var cryptoWrapper = JSON.parse(decryptedString);
                 var fieldx = cryptoWrapper.field;
                 var idx = cryptoWrapper.id;
-                if (id == "" || (idx == id && fieldx == fld))
+                if (id == "" || (id.indexOf(idx) != -1 && fieldx == fld))
                 {
                     log("Found!","We found the tamper proof variables and they match!");
                     var cryptoKey = cryptoWrapper.key;
                     var encryptedValue = field.children("div").children("[field='payload']").children("span").text();
                     var iv = JSON.stringify({field:fieldx,id:idx});
                     log("Decrypting Payload","Decrypting the payload using AES-256-CTR.");
-                    var result = skyrepo.decryptSymmetric(cryptoKey,iv,encryptedValue);
+                    var result = skycrypto.decryptSymmetric(cryptoKey,iv,encryptedValue);
 
                     replaceField(field,result);
                     return result;
@@ -358,7 +370,7 @@ function decryptField(field)
             }
         }
     }
-    skyrepo.selectedPpk = selectedPpk;
+    skycrypto.selectedPpk = selectedPpk;
 }
 
 function verifyField(field)
@@ -370,6 +382,6 @@ function verifyField(field)
     delete obj["@signature"];
     delete obj["@owner"];
     log("Verifying","Verifying the message using the public key.");
-    var result = skyrepo.verifyAsymmetric(JSON.stringify(obj),signature,pk);
+    var result = skycrypto.verifyAsymmetric(JSON.stringify(obj),signature,pk);
     return result;
 }

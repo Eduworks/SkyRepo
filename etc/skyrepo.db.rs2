@@ -1,0 +1,107 @@
+//Copyright 2015 Eduworks Corporation and other contributing parties.
+//Licensed under an Apache 2.0 License. See LICENSE in the root directory.
+
+//Uses ElasticSearch as a backend.
+
+type=#add(a="@",b="type");
+context=#add(a="@",b="context");
+owner=#add(a="@",b="owner");
+signature=#add(a="@",b="signature");
+id=#add(a="@",b="id");
+
+urlBase=#add(
+	a="http://localhost:9200"
+);
+#urlBase=urlBase;
+
+putUrl=#add(
+	a=urlBase,
+	b="/data/",
+	c="@type",
+	d="/",
+	g="@id",
+	h=#if(
+		operator="@version",
+		operand="",
+		ne=#add(
+			a="?version=",
+			i="@version",
+			j="&version_type=external"
+		)
+	)
+);
+
+put=#if(
+	operator="@obj",
+	operand="",
+	ne=#object(
+		a=#fixElasticsearchMappings(
+			obj=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().debug(prefix="Starting with:")
+		),
+		z=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().debug().httpPost(
+			url=putUrl,
+			contentType="application/json",
+			multipart="false"
+		)
+	)
+).object(z=#toObject(obj="@obj")).cget(z="");
+
+#skyrepoPut=put;
+
+getUrl=#add(
+	a=urlBase,
+	b="/data/",
+	c="@type",
+	f="/",
+	g="@id",
+	h=#if(
+		operator="@version",
+		operand="",
+		ne=#add(
+			a="?version=",
+			b="@version",
+			c="&version_type=external"
+		)
+	)
+);
+
+get=getUrl.httpGet().toObject().debug().cgetByParam(
+	param="_source"
+).debug().fromDotAndArrayNotationObject().filterResults();
+
+#skyrepoGet=get;
+
+searchObj=#object(
+	from="0",
+	size="50",
+	fields=#object(
+		a=context,
+		b=type,
+		c=id,
+		d=owner,
+		e=signature,
+		f="name"
+	).valueSet(),
+	query=#object(
+		filtered=#object(
+			query=#object(
+				query_string=#object(
+					query="@q"
+				)
+			)
+		)
+	)
+);
+
+searchUrl=#add(
+	a=urlBase,
+	b="/_search"
+);
+
+search=searchObj.httpPost(url=searchUrl,multipart="false").toObject().cget(hits="").cget(hits="").cforEach(
+	paramName="obj",
+	array="true",
+	op=#toObject(obj="@obj").getByParam(param="fields").cforEach(paramName="key",valueName="val",op=#reduce(obj="@val"))
+).filterResults().displayJson(_collapse="true");
+
+#skyrepoSearch=search;

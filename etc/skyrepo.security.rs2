@@ -1,26 +1,74 @@
+//Copyright 2015 Eduworks Corporation and other contributing parties.
+//Licensed under an Apache 2.0 License. See LICENSE in the root directory.
+
 type=#add(a="@",b="type");
+context=#add(a="@",b="context");
 owner=#add(a="@",b="owner");
-owner=#toObject(obj="@obj").getByParam(param=owner).replace(replace="-----BEGIN PUBLIC KEY-----",with="").replace(replace="-----END PUBLIC KEY-----",with="").replace(regex="true",replace="\r?\n",with="");
+protect=#add(a="@",b="protect");
+obj=#toObject(obj="@obj");
+
+owner=obj.getByParam(
+	param=owner
+).replace(
+	replace="-----BEGIN PUBLIC KEY-----",
+	with=""
+).replace(
+	replace="-----END PUBLIC KEY-----",
+	with=""
+).replace(
+	regex="true",
+	replace="\r?\n",
+	with=""
+);
+
+urlType=#add(
+	a=obj.getByParam(param=context).string(op="trim",chars="/"),
+	b=#if(operator=obj.getByParam(param=context),operand="",ne="/"),
+	c=obj.getByParam(param=type).replace(replace=obj.getByParam(param=context),with="").string(op="trim",chars="/")
+);
 
 encryptedTypes=#object(
 	a="http://skyrepo.eduworks.com/EncryptedValue",
-	b="EncryptedValue"
+	b="EncryptedValue",
+	c="http://schema.eduworks.com/ebac/0.1/encryptedValue"
 ).valueSet();
 
+isEncryptedType=#if(
+	operator=encryptedTypes.has(has=urlType.debug()),
+	operand="true",
+	eq="true",
+	ne=#if(
+		operator=#httpGet(obj=urlType).fileToString().toObject().getByParam(param=protect),
+		operand="true",
+		eq="true",
+		ne="false"
+	)
+).cache(global="true",name=#add(z=urlType,a="isEncryptedType"));
+
 filterResultObject=#if(
-	operator=encryptedTypes.has(has=#toObject(obj="@obj").getByParam(param=type)),
+	operator=isEncryptedType.call(type=obj.getByParam(param=type)),
 	operand="true",
 	eq=#if(
-		operator=#signatureSheet().has(has=owner),
-		operand="true",
-		eq=#toObject(obj="@obj").cforEach(
+		operator=#if(operator="@explicit",operand="true",eq=owner,ne="ahh"),
+		operand="",
+		eq=obj.cforEach(
 			paramName="key",
 			valueName="obj",
 			threaded="false",
 			op=#filterResults()
+		),
+		ne=#if(
+			operator=#signatureSheet().has(has=owner),
+			operand="true",
+			eq=obj.cforEach(
+				paramName="key",
+				valueName="obj",
+				threaded="false",
+				op=#filterResults()
+			)
 		)
 	),
-	ne=#toObject(obj="@obj").cforEach(
+	ne=obj.cforEach(
 		paramName="key",
 		valueName="obj",
 		threaded="false",

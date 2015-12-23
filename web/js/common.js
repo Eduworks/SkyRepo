@@ -1,10 +1,3 @@
-var PAGE_LOGIN="index.html";
-var PAGE_HOME="search.html";
-var PAGE_CREATE="create.html";
-var PAGE_SEARCHRESULTS="searchResults.html";
-var PAGE_ACCOUNT="user.html";
-var PAGE_ADMIN="admin.html";
-
 function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -98,6 +91,20 @@ function copyTextToClipboard(text) {
 function download(filename, text) {
     var pom = document.createElement('a');
     pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+function downloadBase64(filename, base64) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;base64,' + base64);
     pom.setAttribute('download', filename);
 
     if (document.createEvent) {
