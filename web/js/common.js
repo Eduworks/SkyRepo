@@ -129,7 +129,18 @@ function stringifyJSON(obj){
     var key;
     for(var index in keys){
         key = keys[index];
+        if (obj[key] !== undefined)
         tObj[ key ] = obj[ key ];
     }
     return JSON.stringify(tObj);
+}
+
+function trim(str, characters) {
+  var c_array = characters.split('');
+  var result  = '';
+
+  for (var i=0; i < characters.length; i++)
+    result += '\\' + c_array[i];
+
+  return str.replace(new RegExp('^[' + result + ']+|['+ result +']+$', 'g'), '');
 }

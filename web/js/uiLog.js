@@ -8,4 +8,6 @@ function log(short,long)
     logElement.animate({
         scrollTop: height
     }, 500);
+    console.log(short);
+    console.log(long);
 }
