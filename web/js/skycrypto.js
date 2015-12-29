@@ -106,7 +106,7 @@ skycrypto.addKey = function(ppk,name,callback)
 
 skycrypto.encryptAsymmetric = function(text,pk)
 {
-    return forge.util.encode64(skycrypto.pk(pk).encrypt(text,'RSAES-PKCS1-V1_5'));
+    return forge.util.encode64(skycrypto.pk(pk).encrypt(text,'RSA-OAEP'));
 }
 
 skycrypto.signAsymmetric = function(text,ppk)
@@ -118,7 +118,7 @@ skycrypto.signAsymmetric = function(text,ppk)
 
 skycrypto.decryptAsymmetric = function(text,ppk)
 {
-    return skycrypto.ppk(ppk).decrypt(forge.util.decode64(text),'RSAES-PKCS1-V1_5');
+    return skycrypto.ppk(ppk).decrypt(forge.util.decode64(text),'RSA-OAEP');
 }
 
 skycrypto.verifyAsymmetric = function(text,signature,pk)

@@ -147,11 +147,12 @@ function startFileUpload3(encrypt)
         
         var t = $("#fileManagerResults").children(".tile").last();
         t.find(".title").text("Uploading...");
-        
         skyrepo.update(
             skymanip.selectedObject,
             function(){
                 t.find(".title").text(files[0].name);
+                t.attr("id",skymanip.selectedObject["@id"]);
+                
                 files.shift();
                 if (files.length != 0)
                     startFileUpload();

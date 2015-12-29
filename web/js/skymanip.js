@@ -85,7 +85,12 @@ skymanip.encrypt = function(hintAtType)
     skymanip.selectedObject["@id"]=preObj["@id"];
     skymanip.selectedObject["@owner"]=skycrypto.pkText();
     if (hintAtType == true)
-        skymanip.selectedObject["@encryptedType"]=preObj["@type"];
+    {
+        if (preObj["@type"].indexOf("http://") == 0)
+            skymanip.selectedObject["@encryptedType"]=preObj["@type"];
+        else
+            skymanip.selectedObject["@encryptedType"] = preObj["@context"]+"/"+preObj["@type"];
+    }
     skymanip.selectedObject.name = preObj.name;
     skymanip.selectedObject.secret = [encryptedKey];
     skymanip.selectedObject.payload = encryptedText;

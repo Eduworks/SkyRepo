@@ -14,14 +14,14 @@ $( ".dataMenu" ).on( "click", ".label:contains('sign')",function(){
 
 $( ".dataMenu" ).on( "click", ".label:contains('decrypt')",function(){
     var field = $(this).parent();
-    if (field.find("[field='@type']").children("span").text() == skyrepo.const.ebac.encryptedValue)
+    if (field.find("[field='@type']").children("p").text() == skyrepo.const.ebac.encryptedValue)
         decryptField(field);
 });
 
 $( ".dataMenu" ).on( "click", ".label:contains('verify')",function(){
     var field = $(this).parent();
-    if (field.find("[field='@signature']").children("span").text() != undefined)
-        if (field.find("[field='@owner']").children("span").text() != undefined)
+    if (field.find("[field='@signature']").children("p").text() != undefined)
+        if (field.find("[field='@owner']").children("p").text() != undefined)
             alert(verifyField(field));
 });
 
@@ -40,11 +40,11 @@ $( ".dataMenu" ).on( "click", ".label:contains('X')",function(){
 $( ".dataMenu" ).on( "click", ".label:contains('copy')",function(){
     $(".newData").first().children("div").find("[field='@id']").each(
         function(i,e){
-            var url = $(e).children("span").text();
+            var url = $(e).children("p").text();
             var split = url.split("\/");
             if (split[split.length-4] == "data") 
                 split[split.length-2] = guid();
-            $(e).children("span").text(split.join("/"));
+            $(e).children("p").text(split.join("/"));
         }
     )
 });
@@ -52,20 +52,20 @@ $( ".dataMenu" ).on( "click", ".label:contains('copy')",function(){
 $( ".dataMenu" ).on( "click", ".label:contains('change')",function(){
     $(".newData").first().children("div").children("div").children("[field='@context']").each(
         function(i,e){
-            var newSchema = prompt("Please enter the new context.",$(e).children("span").text());
-            $(e).children("span").text(newSchema);
+            var newSchema = prompt("Please enter the new context.",$(e).children("p").text());
+            $(e).children("p").text(newSchema);
         }
     )
     $(".newData").first().children("div").children("div").children("[field='@type']").each(
         function(i,e){
-            var newType = prompt("Please enter the new type.",$(e).children("span").text());
-            $(e).children("span").text(newType);
+            var newType = prompt("Please enter the new type.",$(e).children("p").text());
+            $(e).children("p").text(newType);
             
-            var url = $(e).parent().children("[field='@id']").children("span").text();
+            var url = $(e).parent().children("[field='@id']").children("p").text();
             var split = url.split("\/");
             if (split[split.length-4] == "data") 
                 split[split.length-3] = newType;
-            $(e).parent().children("[field='@id']").children("span").text(split.join("/"));
+            $(e).parent().children("[field='@id']").children("p").text(split.join("/"));
         }
     )
 });
@@ -78,11 +78,11 @@ $( ".dataMenu" ).on( "click", ".label:contains('Save')",function(){
 $( ".dataMenu" ).on( "mousemove", ".label:contains('Save')",function(){
     $(".newData").first().children("div").find("[field='@id']").each(
         function(i,e){
-            var url = $(e).children("span").text();
+            var url = $(e).children("p").text();
             var split = url.split("\/");
             if (split[split.length-4] == "data") 
                 split[split.length-1] = new Date().getTime();
-            $(e).children("span").text(split.join("/"));
+            $(e).children("p").text(split.join("/"));
         }
     )
 });
@@ -120,8 +120,8 @@ function dataEdit(data)
 
 function serializeField(field,child)
 {
-    if (field.children("span").length == 1)
-        return field.children("span").text();
+    if (field.children("p").length == 1)
+        return field.children("p").text();
     else if (field.children("div").length > 0)
     {
         var obj = {};
@@ -153,7 +153,7 @@ function encryptField(field,text)
     }
     
     var fieldx = field.attr("field");
-    var id = $("[field='@id']").children("span").text();
+    var id = $("[field='@id']").children("p").text();
     log("Generating Secret","Generating Symmetric Key for AES-256-CTR.");
     var cryptoKey = skycrypto.newSymmetricKey();
     log("Encoding Secret","Encoding Tamper-proof secret using field and ID.");
@@ -173,7 +173,7 @@ function encryptField(field,text)
     obj["@type"]=skyrepo.const.ebac.encryptedValue;
     obj["@owner"]=skycrypto.pkText();
     if (field.find("[field='@id']").length > 0)
-        obj["@id"]=field.find("[field='@id']").children("span").text();
+        obj["@id"]=field.find("[field='@id']").children("p").text();
     replaceField(field,obj);
 }
 
@@ -202,7 +202,7 @@ function signField(field,obj)
 
 function replaceField(field,obj)
 {
-    field.children("span").remove();
+    field.children("p").remove();
     field.children("div").remove();
     field.children("ul").remove();
     try{
@@ -248,7 +248,7 @@ function replaceField(field,obj)
         if (field.children("label").text() == "@owner")
             field.append(createContactSmall(obj));
         else
-            field.append("<span>"+obj+"</span>");
+            field.append("<p style='text-overflow: ellipsis;margin-bottom:0px;overflow:hidden;'>"+obj+"</p>");
     }
     decorate(field,field.children("label").text());
     contextualEnable(field,obj);
@@ -288,7 +288,7 @@ function decorate(field,f)
     if (f.indexOf("@") == -1 && f != "payload" && f != "secret")
     {
         field.prepend(decorationButton("X","Deletes this field.")+decorationButton("encrypt","Encrypts the field so nobody but you and the people you authorize can see the data."));
-        field.children("span").attr("contenteditable","true");
+        field.children("p").attr("contenteditable","true");
     }
     if (f == "@id")
     {
@@ -333,7 +333,7 @@ function contextualEnable(field,obj)
 
 function decryptField(field)
 {
-    var id = field.find("[field='@id']").children("span").text();
+    var id = field.find("[field='@id']").children("p").text();
     var fld = field.attr("field");
     var selectedPpk = skycrypto.selectedPpk;
     log("Searching for Secret","Attempting to decrypt each secret using all available keys.");
@@ -341,10 +341,10 @@ function decryptField(field)
     for (var ppk in skycrypto.ppks)
     {
         skycrypto.selectedPpk = ppk;
-        for (var secretIndex = 0;secretIndex < field.children("div").children("[field='secret']").children("span").length;secretIndex++)
+        for (var secretIndex = 0;secretIndex < field.children("div").children("[field='secret']").children("p").length;secretIndex++)
         {
             log("PPK " + ppkIndex++ + " vs Secret "+secretIndex,"Trying a PPK/Secret pair.");
-            var text = field.children("div").children("[field='secret']").children("span").eq(secretIndex).text().trim();
+            var text = field.children("div").children("[field='secret']").children("p").eq(secretIndex).text().trim();
             try
             {
                 var decryptedString = skycrypto.decryptAsymmetric(text);
@@ -355,7 +355,7 @@ function decryptField(field)
                 {
                     log("Found!","We found the tamper proof variables and they match!");
                     var cryptoKey = cryptoWrapper.key;
-                    var encryptedValue = field.children("div").children("[field='payload']").children("span").text();
+                    var encryptedValue = field.children("div").children("[field='payload']").children("p").text();
                     var iv = JSON.stringify({field:fieldx,id:idx});
                     log("Decrypting Payload","Decrypting the payload using AES-256-CTR.");
                     var result = skycrypto.decryptSymmetric(cryptoKey,iv,encryptedValue);
@@ -375,9 +375,9 @@ function decryptField(field)
 
 function verifyField(field)
 {
-    var id = $("[field='@id']").children("span").text();
-    var pk = field.children("div").children("[field='@owner']").children("span").text();
-    var signature = field.children("div").children("[field='@signature']").children("span").text();
+    var id = $("[field='@id']").children("p").text();
+    var pk = field.children("div").children("[field='@owner']").children("p").text();
+    var signature = field.children("div").children("[field='@signature']").children("p").text();
     var obj = JSON.parse(serializeField(field));
     delete obj["@signature"];
     delete obj["@owner"];

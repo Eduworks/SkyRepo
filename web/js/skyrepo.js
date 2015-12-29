@@ -38,7 +38,7 @@ skyrepo.update = function(object,successCallback,errorCallback)
 skyrepo.get = function(id,successCallback,errorCallback)
 {
     var formData = new FormData();
-    formData.append("signatureSheet",skycrypto.createSignatureSheet(1000));
+    formData.append("signatureSheet",skycrypto.createSignatureSheet(10000));
     $.ajax({
         type: "POST",
         url: id,
@@ -60,7 +60,7 @@ skyrepo.search = function(query,successCallback,errorCallback)
 {
     var formData = new FormData();
     formData.append("data",query);
-    formData.append("signatureSheet",skycrypto.createSignatureSheet(1000));
+    formData.append("signatureSheet",skycrypto.createSignatureSheet(10000));
     $.ajax({
         type: "POST",
         url: skyrepo.serviceUrl+"sky/repo/search",
