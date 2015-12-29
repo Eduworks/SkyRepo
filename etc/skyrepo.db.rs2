@@ -9,10 +9,7 @@ owner=#add(a="@",b="owner");
 signature=#add(a="@",b="signature");
 id=#add(a="@",b="id");
 
-urlBase=#add(
-	a="http://localhost:9200"
-);
-#urlBase=urlBase;
+urlBase=#urlBase();
 
 putUrl=#add(
 	a=urlBase,
@@ -36,9 +33,9 @@ put=#if(
 	operand="",
 	ne=#object(
 		a=#fixElasticsearchMappings(
-			obj=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().debug(prefix="Starting with:")
+			obj=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject()
 		),
-		z=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().debug().httpPost(
+		z=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().httpPost(
 			url=putUrl,
 			contentType="application/json",
 			multipart="false"
@@ -65,9 +62,9 @@ getUrl=#add(
 	)
 );
 
-get=getUrl.httpGet().toObject().debug().cgetByParam(
+get=getUrl.httpGet().toObject().cgetByParam(
 	param="_source"
-).debug().fromDotAndArrayNotationObject().filterResults();
+).fromDotAndArrayNotationObject().filterResults();
 
 #skyrepoGet=get;
 

@@ -7,7 +7,6 @@ owner=#add(a="@",b="owner");
 #owner=owner;
 schema=#add(a="@",b="schema");
 #schema=schema;
-
 signatureParam=#add(a="@",b="signature");
 signatureArr=#toObject(obj="@signatureArr");
 type=signatureArr.getByParam(param=type);
@@ -33,22 +32,22 @@ verifySignature=#object(
 	a=#if(
 		operator=type,
 		operand="http://schema.eduworks.com/ebac/0.1/timeLimitedSignature",
-		ne=#error(msg="Invalid Signature Version.")
+		ne=#error(code="422",msg="Invalid Signature Version.")
 	),
 	aa=#if(
 		operator=type,
 		operand="",
-		eq=#error(msg="Missing Signature Version.")
+		eq=#error(code="422",msg="Missing Signature Version.")
 	),
 	b=#if(
 		operator=expiry,
 		operand=#date(_raw="true"),
-		lt=#error(msg="A Signature is Expired.")
+		lt=#error(code="419",msg="A Signature is Expired.")
 	),
 	bb=#if(
 		operator=expiry,
 		operand="",
-		eq=#error(msg="Missing expiry date.")
+		eq=#error(code="422",msg="Missing expiry date.")
 	),
 	c=#if(
 		operator=signature.rsaVerify(
@@ -56,15 +55,15 @@ verifySignature=#object(
 			against=signatureArr.removeByParam(param=signatureParam)
 		),
 		operand="true",
-		ne=#error(msg=#add(a="Invalid Signature Detected: ",b=signature))
+		ne=#error(code="451",msg=#add(a="Invalid Signature Detected: ",b=signature))
 	),
 	cc=#if(
 		operator=signature,
 		operand="",
-		eq=#error(msg="Missing Signature.")	
+		eq=#error(code="496",msg="Missing Signature.")	
 	),
 	z=owner
 ).cget(z="");
 
-signatureSheet=signatureSheet.cforEach(paramName="signatureArr",array="true",op=verifySignature).cache(name="signatureSheet");
+signatureSheet=signatureSheet.cforEach(paramName="signatureArr",threaded="false",array="true",rethrow="true",op=verifySignature).cache(name="signatureSheet");
 #signatureSheet=signatureSheet;

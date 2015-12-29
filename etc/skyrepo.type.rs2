@@ -54,7 +54,7 @@ addMappingNoSearch=#object(
 			index="no"
 		)
 	)
-).httpPost(url=mapUrl,multipart="false").debug();
+).httpPost(url=mapUrl,multipart="false");
 
 iterateOverFields=obj.cforEach(
 	paramName="field",
@@ -63,7 +63,7 @@ iterateOverFields=obj.cforEach(
 		operator=properties.cgetByParam(param="@field"),
 		operand="",
 		eq=#if(
-			operator=prefixType.debug(prefix="Prefix Type:"),
+			operator=prefixType,
 			operand="",
 			ne=#if(
 				operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType).cgetByParam(param=simpleType).cgetByParam(param=type)),
