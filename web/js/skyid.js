@@ -1,5 +1,7 @@
 var skyid = {};
 
+skyid.selectedServer = "";
+
 skyid.usernameSalt = "This is a salt. It is a good salt. We like our salt salty, because it ensures that nobody gets our credentialz.";
 skyid.pbkdf2UsernameIterations = 1000;
 skyid.pbkdf2UsernameWidth = 64;
@@ -72,7 +74,7 @@ skyid.fetchCredentials = function(successCallback,errorCallback,keyAddCallback)
     formData.append("credentialRequest",stringifyJSON(requestObject));
     $.ajax({
         type: "POST",
-        url: skyid.serviceUrl+"sky/id/login",
+        url: skyid.selectedServer+"sky/id/login",
         mimeType: "multipart/form-data",
         data: formData,
         contentType: false,
@@ -171,7 +173,7 @@ skyid.create = function(successCallback,errorCallback,padGenerationCallback)
     formData.append("credentialCommit",stringifyJSON(requestObject));
     $.ajax({
         type: "POST",
-        url: skyid.serviceUrl+"sky/id/create",
+        url: skyid.selectedServer+"sky/id/create",
         mimeType: "multipart/form-data",
         data: formData,
         contentType: false,
@@ -235,7 +237,7 @@ skyid.commitCredentials = function(successCallback,errorCallback,padGenerationCa
     formData.append("credentialCommit",stringifyJSON(requestObject));
     $.ajax({
         type: "POST",
-        url: skyid.serviceUrl+"sky/id/commit",
+        url: skyid.selectedServer+"sky/id/commit",
         mimeType: "multipart/form-data",
         data: formData,
         contentType: false,

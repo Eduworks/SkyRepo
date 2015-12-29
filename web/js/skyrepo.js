@@ -3,7 +3,8 @@ var skyrepo = {};
 if (localStorage["skyrepo.servers"] === undefined)
     localStorage["skyrepo.servers"] = JSON.stringify({});
 skyrepo.servers = JSON.parse(localStorage["skyrepo.servers"]);
-skyrepo.selectedServer = "http://localhost:9722/api/custom";
+
+skyrepo.selectedServer = "";
 
 skyrepo.version = 0.1;
 
@@ -63,7 +64,7 @@ skyrepo.search = function(query,successCallback,errorCallback)
     formData.append("signatureSheet",skycrypto.createSignatureSheet(10000));
     $.ajax({
         type: "POST",
-        url: skyrepo.serviceUrl+"sky/repo/search",
+        url: skyrepo.selectedServer+"sky/repo/search",
         mimeType: "multipart/form-data",
         data: formData,
         contentType: false,
