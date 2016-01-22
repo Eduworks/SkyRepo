@@ -14,11 +14,12 @@ urlType=#add(
 
 mapUrl=#add(
 	a=#urlBase(),
-	b="/data/_mapping/",
-	c="@type"
+	b="/data/",
+	c="@type",
+	d="/_mapping"
 );
 
-map=mapUrl.httpGet().fileToString().toObject();
+map=mapUrl.httpGet().toObject();
 
 properties=map.cget(data="").cget(mappings="").getByParam(param="@type").cget(properties="");
 
@@ -31,7 +32,7 @@ noSearchList=#object(
 //If the prefix.@type == null, skip.
 //If the schema of the @type of the field (at the appropriate nesting level) is base64:base64, add a mapping to not index the field.
 
-prefix=#split(obj="@field",split=".").cremove(index=#split(obj="@field",split=".").count().add(z="-1")).flatten(_delimiter=".");
+prefix=#split(obj="@field",split=".").remove(index=#split(obj="@field",split=".").count().add(z="-1")).flatten(_delimiter=".");
 simpleType=#split(obj="@field",split=".").cgetIndex(index=#split(obj="@field",split=".").count().add(z="-1"));
 
 prefixType=#if(
@@ -54,7 +55,7 @@ addMappingNoSearch=#object(
 			index="no"
 		)
 	)
-).httpPost(url=mapUrl,multipart="false");
+).httpPost(url=mapUrl,multipart="false").debug();
 
 iterateOverFields=obj.cforEach(
 	paramName="field",
@@ -63,17 +64,16 @@ iterateOverFields=obj.cforEach(
 		operator=properties.cgetByParam(param="@field"),
 		operand="",
 		eq=#if(
-			operator=prefixType,
+			operator=prefixType.debug(prefix="Prefix Type:"),
 			operand="",
 			ne=#if(
-				operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType).cgetByParam(param=simpleType).cgetByParam(param=type)),
+				operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType.reduce()).cgetByParam(param=simpleType).cgetByParam(param=type)),
 				operand="true",
 				eq=addMappingNoSearch,
 				ne=#debug(prefix="Not Mapping due to non-base64: ",obj="@field")
 			),
 			eq=#debug(prefix="Not Mapping due to lack of prefix: ",obj="@field")
-		),
-		ne=#debug(prefix="Already Mapped: ",obj="@field")
+		)
 	)
 );
 

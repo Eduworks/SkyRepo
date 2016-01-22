@@ -4,28 +4,69 @@
 type=#add(a="@",b="type");
 context=#add(a="@",b="context");
 owner=#add(a="@",b="owner");
+reader=#add(a="@",b="reader");
 protect=#add(a="@",b="protect");
 obj=#toObject(obj="@obj");
 
-owner=obj.getByParam(
+owners=obj.getByParam(
 	param=owner
-).replace(
-	replace="-----BEGIN PUBLIC KEY-----",
-	with=""
-).replace(
-	replace="-----END PUBLIC KEY-----",
-	with=""
-).replace(
-	regex="true",
-	replace="\r?\n",
-	with=""
+).toArray().cforEach(
+	paramName="owner",
+	array="true",
+	threaded="false",
+	op=#replace(
+		obj="@owner",
+		replace="-----BEGIN PUBLIC KEY-----",
+		with=""
+	).replace(
+		replace="-----END PUBLIC KEY-----",
+		with=""
+	).replace(
+		regex="true",
+		replace="\r?\n",
+		with=""
+	)
 );
+
+readers=obj.getByParam(
+	param=reader
+).toArray().cforEach(
+	paramName="reader",
+	array="true",
+	threaded="false",
+	op=#replace(
+		obj="@reader",
+		replace="-----BEGIN PUBLIC KEY-----",
+		with=""
+	).replace(
+		replace="-----END PUBLIC KEY-----",
+		with=""
+	).replace(
+		regex="true",
+		replace="\r?\n",
+		with=""
+	)
+);
+
+ownersOrReaders=#object(a=owners,b=readers).valueSet().union();
 
 urlType=#add(
 	a=obj.getByParam(param=context).string(op="trim",chars="/"),
 	b=#if(operator=obj.getByParam(param=context),operand="",ne="/"),
-	c=obj.getByParam(param=type).replace(replace=obj.getByParam(param=context),with="").string(op="trim",chars="/")
+	c=#replace(obj="@type",replace=obj.getByParam(param=context),with="").string(op="trim",chars="/").debug()
 );
+
+types=obj.getByParam(param=type).toArray().cforEach(
+	paramName="type",
+	array="true",
+	threaded="false",
+	op=#if(
+		operator=#has(obj="@type",has="http"),
+		operand=true,
+		eq=urlType,
+		ne="@type"
+	)
+).debug();
 
 encryptedTypes=#object(
 	a="http://skyrepo.eduworks.com/EncryptedValue",
@@ -34,23 +75,23 @@ encryptedTypes=#object(
 ).valueSet();
 
 isEncryptedType=#if(
-	operator=encryptedTypes.has(has=urlType.debug()),
-	operand="true",
-	eq="true",
-	ne=#if(
-		operator=#httpGet(obj=urlType).fileToString().toObject().getByParam(param=protect),
+	operator=encryptedTypes.intersect(b=types).count(),
+	operand="0",
+	gt="true",
+	eq=#if(
+		operator=#httpGet(obj=types.getIndex(index="0")).fileToString().toObject().getByParam(param=protect),
 		operand="true",
 		eq="true",
 		ne="false"
 	)
-).cache(global="true",name=#add(z=urlType,a="isEncryptedType"));
+);
 
 filterResultObject=#if(
-	operator=isEncryptedType.call(type=obj.getByParam(param=type)),
+	operator=isEncryptedType.debug(),
 	operand="true",
 	eq=#if(
-		operator=#if(operator="@explicit",operand="true",eq=owner,ne="ahh"),
-		operand="",
+		operator=ownersOrReaders.debug().count(),
+		operand="0",
 		eq=obj.cforEach(
 			paramName="key",
 			valueName="obj",
@@ -58,9 +99,9 @@ filterResultObject=#if(
 			op=#filterResults()
 		),
 		ne=#if(
-			operator=#signatureSheet().has(has=owner),
-			operand="true",
-			eq=obj.cforEach(
+			operator=#signatureSheet().debug().intersect(b=ownersOrReaders.debug()).count(),
+			operand="0",
+			gt=obj.cforEach(
 				paramName="key",
 				valueName="obj",
 				threaded="false",

@@ -16,7 +16,7 @@ putUrl=#add(
 	b="/data/",
 	c="@type",
 	d="/",
-	g="@id",
+	g=#urlEncode(obj="@id"),
 	h=#if(
 		operator="@version",
 		operand="",
@@ -50,7 +50,7 @@ getUrl=#add(
 	b="/data/",
 	c="@type",
 	f="/",
-	g="@id",
+	g=#urlEncode(obj="@id"),
 	h=#if(
 		operator="@version",
 		operand="",
@@ -71,14 +71,6 @@ get=getUrl.httpGet().toObject().cgetByParam(
 searchObj=#object(
 	from="0",
 	size="50",
-	fields=#object(
-		a=context,
-		b=type,
-		c=id,
-		d=owner,
-		e=signature,
-		f="name"
-	).valueSet(),
 	query=#object(
 		filtered=#object(
 			query=#object(
@@ -88,6 +80,16 @@ searchObj=#object(
 			)
 		)
 	)
+).put(
+	_key="_source",
+	_value=#object(
+		a=context,
+		b=type,
+		c=id,
+		d=owner.add(z="*"),
+		e=signature,
+		f="name"
+	).valueSet()
 );
 
 searchUrl=#add(
@@ -95,10 +97,10 @@ searchUrl=#add(
 	b="/_search"
 );
 
-search=searchObj.httpPost(url=searchUrl,multipart="false").toObject().cget(hits="").cget(hits="").cforEach(
+search=searchObj.httpPost(url=searchUrl,multipart="false").toObject().debug().cget(hits="").cget(hits="").cforEach(
 	paramName="obj",
 	array="true",
-	op=#toObject(obj="@obj").getByParam(param="fields").cforEach(paramName="key",valueName="val",op=#reduce(obj="@val"))
+	op=#toObject(obj="@obj").getByParam(param="_source").fromDotAndArrayNotationObject().debug()
 ).filterResults().displayJson(_collapse="true");
 
 #skyrepoSearch=search;
