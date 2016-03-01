@@ -23,11 +23,14 @@ putUrl=#add(
 		ne=#add(
 			a="?version=",
 			i="@version",
-			j="&version_type=external"
-		)
-	)
+			j="&version_type=external&refresh=true"
+		),
+		eq="?refresh=true"
+	),
+	
 );
 
+//BUG: Check to see if there are no signature sheet signatures but the owners change, if it changes the owner.
 put=#if(
 	operator="@obj",
 	operand="",
@@ -35,6 +38,20 @@ put=#if(
 		a=#fixElasticsearchMappings(
 			obj=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject()
 		),
+		b=#if(
+			operator=#owners().count(),
+			operand="0",
+			gt=#if(
+				operator=#signatureSheet().intersect(b=#owners()).count(),
+				operand="0",
+				eq=#if(
+					operator=#owners().count(),
+					operand="0",
+					eq=#error(code="401",msg="This object is public, nobody can own it."),
+					ne=#error(code="401",msg="Only an owner of an object may change it.")
+				)
+			)
+		).call(obj=#skyrepoGet()),
 		z=#toObject(obj="@obj").toObject().toDotAndArrayNotationObject().httpPost(
 			url=putUrl,
 			contentType="application/json",
@@ -44,6 +61,39 @@ put=#if(
 ).object(z=#toObject(obj="@obj")).cget(z="");
 
 #skyrepoPut=put;
+
+deleteUrl=#add(
+	a=urlBase,
+	b="/data/",
+	c="@type",
+	d="/",
+	g=#urlEncode(obj="@id"),
+	z="?refresh=true"
+);
+
+//BUG: Check to see if there are no signature sheet signatures but the owners change, if it changes the owner.
+delete=#object(
+		b=#if(
+			operator=#owners().count(),
+			operand="0",
+			gt=#if(
+				operator=#signatureSheet().intersect(b=#owners()).count(),
+				operand="0",
+				eq=#if(
+					operator=#owners().count(),
+					operand="0",
+					eq=#error(code="401",msg="This object is public, nobody can delete it."),
+					ne=#error(code="401",msg="Only an owner of an object may delete it.")
+				)
+			),
+			eq=#error(code="401",msg="This object is public, nobody can delete it.")
+		).call(obj=#skyrepoGet()),
+		z=#httpDelete(
+			url=deleteUrl
+		).debug()
+).cget(z="");
+
+#skyrepoDelete=delete;
 
 getUrl=#add(
 	a=urlBase,
@@ -97,10 +147,10 @@ searchUrl=#add(
 	b="/_search"
 );
 
-search=searchObj.httpPost(url=searchUrl,multipart="false").toObject().debug().cget(hits="").cget(hits="").cforEach(
+search=searchObj.httpPost(url=searchUrl,multipart="false").toObject().cget(hits="").cget(hits="").cforEach(
 	paramName="obj",
 	array="true",
-	op=#toObject(obj="@obj").getByParam(param="_source").fromDotAndArrayNotationObject().debug()
+	op=#toObject(obj="@obj").getByParam(param="_source").fromDotAndArrayNotationObject()
 ).filterResults().displayJson(_collapse="true");
 
 #skyrepoSearch=search;

@@ -1,4 +1,4 @@
-schema=#httpGet(obj=#debug(obj="@typeUrl")).toObject().cache(name=#add(z="@typeUrl",a="httpGet"));
+schema=#httpGet(obj="@typeUrl").toObject().cache(name=#add(z="@typeUrl",a="httpGet"));
 schemaContext=schema.cgetByParam(param=#add(a="@",b="context"));
 
 type=#add(a="@",b="type");
@@ -7,6 +7,7 @@ context=#add(a="@",b="context");
 obj=#toObject(obj="@obj");
 
 urlType=#add(
+	_string="true",
 	a=obj.getByParam(param=context).string(op="trim",chars="/"),
 	b=#if(operator=obj.getByParam(param=context),operand="",ne="/"),
 	c=obj.getByParam(param=type).replace(replace=obj.getByParam(param=context),with="").string(op="trim",chars="/")
@@ -40,8 +41,9 @@ prefixType=#if(
 	operand="",
 	eq=urlType,
 	ne=#add(
-		a=obj.getByParam(param=prefix.add(z=".@context")).string(op="trim",chars="/"),
-		b=#if(operator=obj.getByParam(param=prefix.add(z=".@context")),operand="",ne="/"),
+		_string="true",
+		a=obj.getByParam(param=prefix.add(z=".@schema")).string(op="trim",chars="/"),
+		b=#if(operator=obj.getByParam(param=prefix.add(z=".@schema")),operand="",ne="/"),
 		c=obj.getByParam(param=prefix.add(z=".@type")).string(op="trim",chars="/")
 	)
 );
@@ -55,7 +57,7 @@ addMappingNoSearch=#object(
 			index="no"
 		)
 	)
-).httpPost(url=mapUrl,multipart="false").debug();
+).httpPost(url=mapUrl,multipart="false");
 
 iterateOverFields=obj.cforEach(
 	paramName="field",
@@ -64,7 +66,7 @@ iterateOverFields=obj.cforEach(
 		operator=properties.cgetByParam(param="@field"),
 		operand="",
 		eq=#if(
-			operator=prefixType.debug(prefix="Prefix Type:"),
+			operator=prefixType,
 			operand="",
 			ne=#if(
 				operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType.reduce()).cgetByParam(param=simpleType).cgetByParam(param=type)),

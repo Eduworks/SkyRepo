@@ -23,8 +23,16 @@ save=postObject.skyrepoPut(
 	version=query.cget(version="")
 );
 
+delete=get.skyrepoDelete(
+	type=query.cget(type=""),
+	id=query.cget(id=""),
+	version=query.cget(version="")
+);
+
+saveOrDelete = #if(operator="@methodType",operand="DELETE",eq=delete,ne=save);
+
 saveOrGet=#object(
-	a=save,
+	a=saveOrDelete,
 	b=get
 ).cget(b="");
 
@@ -34,3 +42,6 @@ data=saveOrGet.call(type="data").displayJson(_collapse="true");
 search=#skyrepoSearch(q=postData.fileToString());
 
 /sky/repo/search=search;
+
+performance=#reflectionPerformance().displayJson();
+/perf=performance;

@@ -27,7 +27,10 @@ owner = owner.replace(
 	with=""
 );
 
-signatureSheet=#fileFromDatastream(name="signatureSheet").fileToString().toArray().debug();
+signatureSheet=#object(
+	a=#fileFromDatastream(name="signatureSheet").fileToString().toArray(),
+	b=#headers().get(signaturesheet="").toArray()
+).valueSet().union();
 
 verifySignature=#object(
 	a=#if(
@@ -43,7 +46,16 @@ verifySignature=#object(
 	b=#if(
 		operator=expiry,
 		operand=#date(_raw="true"),
-		lt=#error(code="419",msg="A Signature is Expired.")
+		lt=#error(
+			code="419",
+			msg=#add(
+				_string="true",
+				a="A Signature is Expired. My time is ",
+				b=#date(_raw="true").toString(),
+				c=" and the signature expires at ",
+				d=expiry
+			).toString()
+		)
 	),
 	bb=#if(
 		operator=expiry,

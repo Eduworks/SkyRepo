@@ -49,11 +49,12 @@ readers=obj.getByParam(
 );
 
 ownersOrReaders=#object(a=owners,b=readers).valueSet().union();
+#owners=owners;
 
 urlType=#add(
 	a=obj.getByParam(param=context).string(op="trim",chars="/"),
 	b=#if(operator=obj.getByParam(param=context),operand="",ne="/"),
-	c=#replace(obj="@type",replace=obj.getByParam(param=context),with="").string(op="trim",chars="/").debug()
+	c=#replace(obj="@type",replace=obj.getByParam(param=context),with="").string(op="trim",chars="/")
 );
 
 types=obj.getByParam(param=type).toArray().cforEach(
@@ -66,7 +67,7 @@ types=obj.getByParam(param=type).toArray().cforEach(
 		eq=urlType,
 		ne="@type"
 	)
-).debug();
+);
 
 encryptedTypes=#object(
 	a="http://skyrepo.eduworks.com/EncryptedValue",
@@ -87,10 +88,10 @@ isEncryptedType=#if(
 );
 
 filterResultObject=#if(
-	operator=isEncryptedType.debug(),
+	operator=isEncryptedType,
 	operand="true",
 	eq=#if(
-		operator=ownersOrReaders.debug().count(),
+		operator=ownersOrReaders.count(),
 		operand="0",
 		eq=obj.cforEach(
 			paramName="key",
@@ -99,7 +100,7 @@ filterResultObject=#if(
 			op=#filterResults()
 		),
 		ne=#if(
-			operator=#signatureSheet().debug().intersect(b=ownersOrReaders.debug()).count(),
+			operator=#signatureSheet().intersect(b=ownersOrReaders).count(),
 			operand="0",
 			gt=obj.cforEach(
 				paramName="key",
