@@ -119,8 +119,14 @@ get=getUrl.httpGet().toObject().cgetByParam(
 #skyrepoGet=get;
 
 searchObj=#object(
-	from="0",
-	size="50",
+	from=#if(operator="@start", operand="",
+		eq="0",
+		ne="@start"
+	),
+	size=#if(operator="@size", operand="",
+		eq="50",
+		ne="@size"
+	),
 	query=#object(
 		filtered=#object(
 			query=#object(

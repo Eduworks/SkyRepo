@@ -1,4 +1,4 @@
 urlBase=#add(
-	a="http://localhost:9200"
+	a="http://52.37.119.79:9200"
 );
 #urlBase=urlBase;

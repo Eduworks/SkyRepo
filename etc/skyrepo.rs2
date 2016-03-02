@@ -39,7 +39,10 @@ saveOrGet=#object(
 data=saveOrGet.call(type="data").displayJson(_collapse="true");
 /data=data;
 
-search=#skyrepoSearch(q=postData.fileToString());
+searchParamData = #fileFromDatastream(name="searchParams");
+searchParamObj = searchParamData.fileToString().toObject();
+
+search=#skyrepoSearch(q=postData.fileToString(), size=searchParamObj.cget(size=""), start=searchParamObj.cget(start=""));
 
 /sky/repo/search=search;
 
