@@ -16,12 +16,6 @@ expiry=signatureArr.cget(expiry="");
 signature=signatureArr.getByParam(param=signatureParam);
 
 owner = owner.replace(
-	replace="-----BEGIN PUBLIC KEY-----",
-	with=""
-).replace(
-	replace="-----END PUBLIC KEY-----",
-	with=""
-).replace(
 	regex="true",
 	replace="\r?\n",
 	with=""
