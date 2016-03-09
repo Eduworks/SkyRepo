@@ -82,11 +82,11 @@ delete=#object(
 				eq=#if(
 					operator=#owners().count(),
 					operand="0",
-					eq=#error(code="401",msg="This object is public, nobody can delete it."),
+					eq=#error(code="403",msg="This object is public, nobody can delete it."),
 					ne=#error(code="401",msg="Only an owner of an object may delete it.")
 				)
 			),
-			eq=#error(code="401",msg="This object is public, nobody can delete it.")
+			eq=#error(code="403",msg="This object is public, nobody can delete it.")
 		).call(obj=#skyrepoGet()),
 		z=#httpDelete(
 			url=deleteUrl
