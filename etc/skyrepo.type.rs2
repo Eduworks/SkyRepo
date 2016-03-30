@@ -102,6 +102,17 @@ addNotAnalyzedMultiField = #object(
 	)
 ).httpPost(url=mapUrl, multipart="false");
 			
+addExcludeFromAllIndex = #object(
+	properties=#object(
+	).put(
+		_key="@field",
+		_value=#object(
+			type="string",
+			include_in_all="false"
+		)
+	)
+).httpPost(url=mapUrl, multipart="false");
+
 
 iterateOverFields=obj.cforEach(
 	paramName="field",
@@ -116,15 +127,20 @@ iterateOverFields=obj.cforEach(
 				operator=#indexOf(str="@field", substr=#add(a="@", b="type")),
 				operand="-1",
 				eq=#if(
-					operator=prefixType,
-					operand="",
-					ne=#if(
-						operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType.reduce()).cgetByParam(param=simpleType).cgetByParam(param=type)),
-						operand="true",
-						eq=addMappingNoSearch,
-						ne=#debug(prefix="Not Mapping due to non-base64: ",obj="@field")
+					operator=#indexOf(str="@field", substr=#add(a="@", b="reader")),
+					operand="-1",
+					eq=#if(
+						operator=prefixType,
+						operand="",
+						ne=#if(
+							operator=noSearchList.has(has=schemaContext.call(typeUrl=prefixType.reduce()).cgetByParam(param=simpleType).cgetByParam(param=type)),
+							operand="true",
+							eq=addMappingNoSearch,
+							ne=#debug(prefix="Not Mapping due to non-base64: ",obj="@field")
+						),
+						eq=#debug(prefix="Not Mapping due to lack of prefix: ",obj="@field")
 					),
-					eq=#debug(prefix="Not Mapping due to lack of prefix: ",obj="@field")
+					ne=addExcludeFromAllIndex,
 				),
 				ne=addNotAnalyzedMultiField,
 			),
