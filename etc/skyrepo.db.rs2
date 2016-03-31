@@ -386,7 +386,7 @@ search = #if(operator=#toArray(obj="@sigResults").count(), operand="@size",
 						).toArray().count()
 					),
 					c="-1"
-				)
+				).append(a="0").cmax()
 			),
 			size="@size"
 		),

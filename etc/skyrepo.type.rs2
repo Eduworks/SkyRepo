@@ -203,7 +203,7 @@ cacheSchemaProtect=#if(
 	operand="0",
 	gt="true",
 	eq=#if(
-		operator=#httpGet(obj="@typeUrl").fileToString().toObject().getByParam(param=protect),
+		operator=#catch(try=#httpGet(obj="@typeUrl").fileToString().toObject().getByParam(param=protect), any="false"),
 		operand="true",
 		eq=#object(
 			a=addProtectedType,
