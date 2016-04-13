@@ -64,7 +64,8 @@ search=#skyrepoSearch(
 		ne="@ownership"
 	).ccall(
 		ownership=searchParamObj.cget(ownership=""),
-	), 
+	),
+	fields=searchParamObj.cget(fields="")
 	types=searchParamObj.cget(types="")
 );
 
