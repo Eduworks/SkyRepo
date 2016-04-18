@@ -1,5 +1,7 @@
-//Copyright 2015 Eduworks Corporation and other contributing parties.
-//Licensed under an Apache 2.0 License. See LICENSE in the root directory.
+// Copyright 2015-2016 Eduworks Corporation and other contributing parties.
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 query=#object(
 	type=#split(obj="@urlRemainder",split="/").getIndex(index="1"),
@@ -10,6 +12,7 @@ query=#object(
 postData=#fileFromDatastream(name="data");
 
 postObject=postData.fileToString().toObject();
+postArray=postData.fileToString().toArray();
 
 get=#skyrepoGet(
 	type=query.cget(type=""),
@@ -42,6 +45,10 @@ saveOrGet=#object(
 data=saveOrGet.call(type="data").displayJson(_collapse="true");
 /data=data;
 
+multiGet=postArray.cforEach(paramName="urlRemainder",op=get.call(type="data"),array="true").displayJson(_collapse="true");
+
+/sky/repo/multiGet=multiGet;
+
 searchParamData = #fileFromDatastream(name="searchParams");
 searchParamObj = searchParamData.fileToString().toObject();
 
@@ -64,8 +71,7 @@ search=#skyrepoSearch(
 		ne="@ownership"
 	).ccall(
 		ownership=searchParamObj.cget(ownership=""),
-	),
-	fields=searchParamObj.cget(fields="")
+	), 
 	types=searchParamObj.cget(types="")
 );
 
@@ -78,3 +84,6 @@ types = #skyrepoTypes();
 
 performance=#reflectionPerformance().displayJson();
 /perf=performance;
+
+pong=#object(ping="pong").displayJson(_collapse="true");
+/ping=pong;
