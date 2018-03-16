@@ -1,0 +1,64 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="SkyRepo">
+    <meta name="application-name" content="SkyRepo">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkyRepo</title>
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+
+    <div style="background-color: #2199e8; margin-bottom: 2em;">
+        <div class="row">
+            <div class="large-12 columns">
+                <h2>SkyRepo</h2>
+                <!--<img src="http://www.cassproject.org/img/CASS-Logo-website-white.png">-->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="large-12 columns">
+            <h1>SkyRepo<br><small>Version 5.9.1</small></h1>
+            <p class="lead">SkyRepo is a linked data repository (CRUD+Search) with security, login, and a JS SDK.
+                <br>Define, manage, and access linked data records.</p>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="columns large-6" style="text-align: center;">
+            <p>Visit the <a href="http://cassproject.org">CASS Project</a> for more information.</p>
+        </div>
+        <div class="columns large-6" style="text-align: center;">
+            <p>Join the conversation via Slack. <a href="https://cassproject.slack.com/">Login</a> or <a href="https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0">Request Account</a></p>
+        </div>
+    </div>
+
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script lang="text/javascript">
+        if (location.protocol == "http:") {
+            $("#compus,#viewer,#editor").attr("title", "Global services require your server to run HTTPS. Click to navigate using default servers.").attr("disabled", true);
+        } else {
+            $("#compus").attr("href", $("#compus").attr("href") + "?server=" + location.origin);
+            $("#viewer").attr("href", $("#viewer").attr("href") + "?server=" + location.origin);
+            $("#editor").attr("href", $("#editor").attr("href") + "?server=" + location.origin);
+        }
+
+    </script>
+
+</body>
+
+</html>

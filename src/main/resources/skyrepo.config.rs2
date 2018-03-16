@@ -1,0 +1,64 @@
+urlBase=#add(
+	a="http://localhost:9200"
+);
+#urlBase=urlBase;
+
+indexBase=#add(a="data");
+#indexBase=indexBase;
+
+// Interval between adapter runs between get requests (in seconds)
+beforeGetInterval=#string(str="1800");
+
+// Interval between adapter runs after saving (in seconds)
+afterSaveInterval=#string(str="900");
+
+afterSave=#if(
+	operator=#variableGet(key="afterSave"),
+	operand=#date(raw="true").add(a=#add(a="-", b=#multiply(a="1000", b=beforeGetInterval))),
+	lt=#object(
+		b=#variableSet(key="afterSave",obj=#date(raw="true"))
+	)
+).cache(name="afterSave",justLock="true");
+
+afterSave=#if(
+	operator=#object(a="127.0.0.1",b="localhost").valueSet().has(has="@ip"),
+	operand="false",
+	eq=afterSave.ccall(background="true")
+);
+
+afterSave=#if(
+	operator="@noExternal",
+	operand="true",
+	ne=afterSave
+);
+
+postData=#fileFromDatastream(name="data");
+postObject=postData.fileToString().toObject();
+afterSave=#object(
+	a=afterSave,
+	b=#wsBroadcast(obj=postObject.getByParam(param=#id())),
+);
+
+#afterSave=afterSave;
+
+beforeGet=#if(
+	operator=#variableGet(key="beforeGet"),
+	operand=#date(raw="true").add(a=#add(a="-", b=#multiply(a="1000", b=afterSaveInterval))),
+	lt=#object(
+		c=#variableSet(key="beforeGet",obj=#date(raw="true"))
+	)
+).cache(name="beforeGet",justLock="true");
+
+beforeGet=#if(
+	operator=#object(a="127.0.0.1",b="localhost").valueSet().has(has="@ip"),
+	operand="false",
+	eq=beforeGet.ccall(background="true")
+);
+
+beforeGet=#if(
+	operator="@noExternal",
+	operand="true",
+	ne=beforeGet
+);
+
+#beforeGet=beforeGet;
