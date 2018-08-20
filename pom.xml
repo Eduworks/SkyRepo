@@ -9,7 +9,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<ec-version>1.6.0</ec-version>
+		<ec-version>2.2.5</ec-version>
+		<ew-version>5.14.1</ew-version>
 	</properties>
 
 	<developers>
@@ -79,8 +80,33 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.eduworks</groupId>
-			<artifactId>ew.levr.ebac.skyid</artifactId>
-			<version>5.10.0</version>
+			<artifactId>ew.levr.security</artifactId>
+			<version>${ew-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
+			<artifactId>ew.levr.db.mapdb</artifactId>
+			<version>${ew-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
+			<artifactId>ew.levr.net</artifactId>
+			<version>${ew-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
+			<artifactId>ew.levr.base</artifactId>
+			<version>${ew-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
+			<artifactId>ew.levr.rdf</artifactId>
+			<version>${ew-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eduworks</groupId>
+			<artifactId>ew.db.mapdb</artifactId>
+			<version>${ew-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.websocket</groupId>
@@ -90,13 +116,9 @@
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
-			<artifactId>ec.ui.framework</artifactId>
+			<artifactId>kbac.skyrepo</artifactId>
 			<version>${ec-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.eduworks</groupId>
-			<artifactId>cass.competency</artifactId>
-			<version>${ec-version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
@@ -105,22 +127,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
-			<artifactId>cass.rollup</artifactId>
+			<artifactId>ebac.repository</artifactId>
 			<version>${ec-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.eduworks</groupId>
-			<artifactId>cass.import</artifactId>
-			<version>${ec-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.eduworks</groupId>
-			<artifactId>cass.adapter</artifactId>
-			<version>${ec-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.eduworks</groupId>
-			<artifactId>org.credentialengine</artifactId>
+			<artifactId>org.schema</artifactId>
 			<version>${ec-version}</version>
 		</dependency>
 	</dependencies>
@@ -173,8 +185,21 @@
 						</goals>
 						<configuration>
 							<includes>*.js</includes>
-							<excludes>skyrepo.backup.js,formdata.js,jvm-npm.js</excludes>
+							<excludes>*skyrepo*.js,formdata.js,jvm-npm.js</excludes>
 							<outputDirectory>src/main/js/skyrepo</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-js-server</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includes>*skyrepo*.js</includes>
+							<outputDirectory>src/main/resources/b-skyrepo</outputDirectory>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
@@ -194,10 +219,9 @@
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 						<fileset>
-							<directory>src/main/webapp/js</directory>
+							<directory>src/main/resources/b-skyrepo</directory>
 							<includes>
-								<include>skyrepo/*</include>
-								<include>skyrepo.*</include>
+								<include>*</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
@@ -223,9 +247,7 @@
 							<jsSourceFiles>
 								<jsSourceFile>src/main/webapp/forge/forge.min.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/require.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/papaparse.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/FileSaver.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/xml2json.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/base64toArrayBuffer.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/pem-jwk.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/stjs.js</jsSourceFile>
@@ -237,16 +259,9 @@
 								<jsSourceFile>src/main/js/skyrepo/FileSaver.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/org.cassproject.schema.general.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/org.schema.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/org.credentialengine.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/org.w3.skos.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/org.cassproject.schema.ebac.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/org.cassproject.schema.cass.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/ebac.identity.js</jsSourceFile>
 								<jsSourceFile>src/main/js/skyrepo/ebac.repository.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/cass.competency.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/cass.import.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/cass.adapter.js</jsSourceFile>
-								<jsSourceFile>src/main/js/skyrepo/cass.rollup.js</jsSourceFile>
 							</jsSourceFiles>
 							<closureLanguageIn>ECMASCRIPT6</closureLanguageIn>
 							<closureLanguageOut>ECMASCRIPT5</closureLanguageOut>
@@ -259,14 +274,14 @@
 						<goals>
 							<goal>minify</goal>
 						</goals>
-						<phase>process-sources</phase>
+						<phase>process-resources</phase>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>1.14</version>
+				<version>1.16</version>
 				<configuration>
 					<verbose>true</verbose>
 				</configuration>
@@ -289,15 +304,25 @@
 							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 							<roots>
 								<root>src/main/js</root>
-								<root>src/main/webapp/js/skyrepo</root>
+								<root>src/main/resources</root>
 							</roots>
 							<includes>
-								<include>**/*.js</include>
-								<include>*.js</include>
+								<include>**/ebac*.js</include>
+								<include>ebac*.js</include>
+								<include>**/ec*.js</include>
+								<include>ec*.js</include>
+								<include>**/org.*.js</include>
+								<include>org.*.js</include>
+								<include>**/Rollup*.js</include>
+								<include>Rollup*.js</include>
+								<include>**/*skyrepo.*.js</include>
+								<include>*skyrepo.*.js</include>
 							</includes>
 							<excludes>
 								<exclude>**/xml2json.js</exclude>
 								<exclude>**/stjs.js</exclude>
+								<exclude>**/skyrepo.js</exclude>
+								<exclude>**/skyrepo.min.js</exclude>
 								<exclude>**/pem-jwk.js</exclude>
 								<exclude>**/require.js</exclude>
 								<exclude>**/jsonld.js</exclude>
@@ -306,27 +331,6 @@
 								<exclude>**/base64x-1.1.js</exclude>
 								<exclude>**/base64toArrayBuffer.js</exclude>
 							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/src/main/webapp/js</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/js</directory>
-								</resource>
-							</resources>
 						</configuration>
 					</execution>
 				</executions>
