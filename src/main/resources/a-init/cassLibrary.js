@@ -35,6 +35,7 @@ load("classpath:org.schema.js");
 load("classpath:org.cassproject.schema.ebac.js");
 load("classpath:ebac.identity.js");
 load("classpath:ebac.repository.js");
+load("classpath:com.eduworks.schema.js");
 
 EcRepository.caching = true;
 EcRemote.async = false;

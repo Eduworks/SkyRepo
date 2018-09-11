@@ -1,0 +1,30 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SkyRepo RS2 Service Testing
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+postDataName = #string(str="srData");
+
+getMultipartPostData = #getFileFromPost(name="@field").fileToString();
+
+srPostData = getMultipartPostData.ccall(field=postDataName).toObject();
+
+//****************************************************************************************************************
+//Hello World
+
+helloWorld = #object(a="Hello World from SkyRepo - Test!!!").displayJson();
+
+/skyRepo/helloWorld = helloWorld;
+
+//****************************************************************************************************************
+//Test Message
+testMessage = #object(
+    responseTestMsg=#add(
+        a="Hello World from SkyRepo!!!  (",
+        b=#date(_raw="true"),
+        c=") Your new message was: '",
+        d=srPostData.cget(testMsg=""),
+        e="'"
+    ),
+    status="true"
+).displayJson(_collapse="true");
+
+/skyRepo/test/message = testMessage;

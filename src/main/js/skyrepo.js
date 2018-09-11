@@ -68126,12 +68126,12 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         }
         var hostnames = new Array();
         var servicePrefixes = new Array();
-        if (this.selectedServer != null && window != undefined && window.document != undefined) {
+        if (this.selectedServer != null) {
             var e = window.document.createElement("a");
             (e)["href"] = this.selectedServer;
             hostnames.push((e)["host"]);
             servicePrefixes.push((e)["pathname"]);
-        } else if (window != undefined && window.location != undefined) {
+        } else {
             if (window.location.host != null) {
                 hostnames.push(window.location.host, window.location.host.replace(".", ".service."), window.location.host + ":8080", window.location.host.replace(".", ".service.") + ":8080");
             }

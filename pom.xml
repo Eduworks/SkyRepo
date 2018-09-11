@@ -5,6 +5,7 @@
 	<groupId>org.eduworks</groupId>
 	<artifactId>skyrepo</artifactId>
 	<packaging>war</packaging>
+	<name>skyrepo</name>
 	<version>5.10.0</version>
 
 	<properties>
@@ -135,31 +136,39 @@
 			<artifactId>org.schema</artifactId>
 			<version>${ec-version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.eduworks</groupId>
+            <artifactId>com.eduworks.schema</artifactId>
+            <version>${ec-version}</version>
+        </dependency>
 	</dependencies>
 	<build>
-		<finalName>skyrepo</finalName>
+		<finalName>${project.name}</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.3.7.v20160115</version>
 				<configuration>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
 					<httpConnector>
 						<port>8080</port>
 					</httpConnector>
-					<scanIntervalSeconds>20</scanIntervalSeconds>
+					<webAppSourceDirectory>target/${project.name}</webAppSourceDirectory>
 					<webApp>
 						<webInfIncludeJarPattern>^$</webInfIncludeJarPattern>
 						<containerIncludeJarPattern>^$</containerIncludeJarPattern>
 					</webApp>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<verbose>true</verbose>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -270,6 +279,7 @@
 							<jsTargetDir>src/main/js</jsTargetDir>
 							<jsFinalFile>skyrepo.js</jsFinalFile>
 							<jsEngine>CLOSURE</jsEngine>
+                            <skipMinify>true</skipMinify>
 						</configuration>
 						<goals>
 							<goal>minify</goal>

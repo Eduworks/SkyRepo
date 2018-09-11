@@ -17,7 +17,7 @@ scripts/node/node_modules
 
 node_modules/
 
-etc/
+.idea/
 
 nb-configuration\.xml
 
