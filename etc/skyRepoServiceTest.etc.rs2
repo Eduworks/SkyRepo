@@ -1,16 +1,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // SkyRepo RS2 Service Testing
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-postDataName = #string(str="srData");
-
-getMultipartPostData = #getFileFromPost(name="@field").fileToString();
-
-srPostData = getMultipartPostData.ccall(field=postDataName).toObject();
 
 //****************************************************************************************************************
 //Hello World
 
-helloWorld = #object(a="Hello World from SkyRepo - Test!!!").displayJson();
+helloWorld = #object(a="Hello World from SkyRepo - Testyy!!!").displayJson();
 
 /skyRepo/helloWorld = helloWorld;
 
@@ -20,8 +15,8 @@ testMessage = #object(
     responseTestMsg=#add(
         a="Hello World from SkyRepo!!!  (",
         b=#date(_raw="true"),
-        c=") Your new message was: '",
-        d=srPostData.cget(testMsg=""),
+        c=") Your old message was: '",
+        d=#srosPostData().cget(testMsg=""),
         e="'"
     ),
     status="true"

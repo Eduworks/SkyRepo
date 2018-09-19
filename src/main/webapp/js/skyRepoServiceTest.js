@@ -29,11 +29,11 @@ function doLoad() {
         var request = new XMLHttpRequest();
         var urlPrefix = "http://localhost:8080/api/custom/";
 
-        formData.append("srData", JSON.stringify({
+        formData.append("srosData", JSON.stringify({
             testMsg: "Hello. This is a test message."
         }));
 
-        request.open("POST", urlPrefix+"skyRepo/test/message");
+        request.open("POST", urlPrefix+"skyRepo/test/js/message");
 
         request.onreadystatechange = function () {
             if (request.readyState==4) {

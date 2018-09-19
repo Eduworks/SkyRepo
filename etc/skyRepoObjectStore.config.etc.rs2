@@ -1,0 +1,21 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SkyRepo Object Store Configuration
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//=========================================================
+// Application Settings - Not safe/easy to change
+//=========================================================
+
+rootSkyRepoObjectStoreLocation = #string(str="E:\TomsWork\CurrentProjects\MLR_Storage_Root");
+#srosObjectStoreLocation = rootSkyRepoObjectStoreLocation;
+
+skyRepoObjectStorePostDataName = #string(str="srosData");
+#srosPostDataName = skyRepoObjectStorePostDataName;
+
+//=========================================================
+// Multipart Post Object Building
+//=========================================================
+
+getMultipartPostData = #getFileFromPost(name="@field").fileToString();
+skyRepoObjectStorePostData = getMultipartPostData.ccall(field=skyRepoObjectStorePostDataName).toObject();
+#srosPostData = skyRepoObjectStorePostData;
