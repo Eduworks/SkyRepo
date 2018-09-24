@@ -27,13 +27,17 @@ function doLoad() {
         var formData = new FormData();
 
         var request = new XMLHttpRequest();
-        var urlPrefix = "http://localhost:8080/api/custom/";
+        var urlPrefix = "http://localhost:8080/api/custom";
 
         formData.append("srosData", JSON.stringify({
-            testMsg: "Hello. This is a test message."
+            initialVersion: "url-test-1",
+            itemName: "Test URL Item",
+            description: "Test URL Item description",
+            objectOwner: "TOM TEST",
+            itemUrl: "https://www.tomahawknation.com/"
         }));
 
-        request.open("POST", urlPrefix+"skyRepo/test/js/message");
+        request.open("POST", urlPrefix+"/skyRepo/os/url/create");
 
         request.onreadystatechange = function () {
             if (request.readyState==4) {

@@ -12,6 +12,12 @@ rootSkyRepoObjectStoreLocation = #string(str="E:\TomsWork\CurrentProjects\MLR_St
 skyRepoObjectStorePostDataName = #string(str="srosData");
 #srosPostDataName = skyRepoObjectStorePostDataName;
 
+skyRepoFileTypeObject = #string(str="file");
+#srosFileTypeObject = skyRepoFileTypeObject;
+
+skyRepoUrlTypeObject = #string(str="url");
+#srosUrlTypeObject = skyRepoUrlTypeObject;
+
 //=========================================================
 // Multipart Post Object Building
 //=========================================================

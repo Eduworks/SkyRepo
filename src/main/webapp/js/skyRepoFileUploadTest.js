@@ -7,6 +7,8 @@
 
 //----------------------------
 
+var retJson;
+
 function doLoad() {
 
     $(document.body).html("");
@@ -30,14 +32,26 @@ function doLoad() {
             formData.append(corpus[index].name, corpus[index]);
         }
 
+        formData.append("srosData", JSON.stringify({
+            updateVersion: "new3-test-3",
+            metadataId: "http://localhost:8080/api/data/schema.org.CreativeWork/0fb5f57e-e6a6-46fe-a2c9-806793f689c1"
+
+            // initialVersion:"new3-test-1",
+            // objectOwner: "TOM TEST"
+
+        }));
+
         var request = new XMLHttpRequest();
-        var urlPrefix = "http://localhost:8080/api/custom/";
-        request.open("POST", urlPrefix + "skyRepo/test/fileTest");
+        var urlPrefix = "http://localhost:8080/api/custom";
+        request.open("POST", urlPrefix + "/skyRepo/os/file/update/version");
+        //request.open("POST", urlPrefix + "/skyRepo/os/file/create");
 
         request.onreadystatechange = function () {
             if (request.readyState==4) {
                 $('#result').html(request.responseText);
                 var json = JSON.parse(request.responseText);
+                console.log(json);
+                retJson = json;
                 documents = json.documents;
             }
         }

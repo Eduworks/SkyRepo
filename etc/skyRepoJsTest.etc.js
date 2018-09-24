@@ -21,7 +21,6 @@ function skyRepoTestJsConfig() {
     return displayJson.call(this, {
         rootSkyRepoObjectStoreLocation: srosObjectStoreLocation(),
         GUID: generateUUID()
-
     });
 }
 
@@ -38,3 +37,13 @@ function skyRepoTestJsMessage() {
 }
 
 bindWebService("/skyRepo/test/js/message", skyRepoTestJsMessage);
+
+
+function skyRepoTestJsParam() {
+    var testParam = getParameter(this,"testParam");
+    return displayJson.call(this, {
+        testParamzzz: testParam
+    });
+}
+
+bindWebService("/skyRepo/test/js/param", skyRepoTestJsParam);
