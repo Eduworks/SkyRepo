@@ -7,6 +7,9 @@
 
 //----------------------------
 
+
+var jsonTest;
+
 function doLoad() {
 
     $(document.body).html("");
@@ -30,19 +33,40 @@ function doLoad() {
         var urlPrefix = "http://localhost:8080/api/custom";
 
         formData.append("srosData", JSON.stringify({
-            initialVersion: "url-test-1",
-            itemName: "Test URL Item",
-            description: "Test URL Item description",
-            objectOwner: "TOM TEST",
-            itemUrl: "https://www.tomahawknation.com/"
+            // initialVersion: "url-test-1",
+            // itemName: "Test URL Item",
+            // description: "Test URL Item description",
+            // objectOwner: "TOM TEST",
+            // itemUrl: "https://cassproject.org/"
+
+            // versionUrl: "https://sandbox.cassproject.org/",
+            // updateVersion: "url-test-2",
+            // metadataId: "http://localhost:8080/api/data/schema.org.CreativeWork/29b5114b-58df-4e26-a995-147784d50f61"
+
+            metadataId: "http://localhost:8080/api/data/schema.org.CreativeWork/29b5114b-58df-4e26-a995-147784d50f61",
+            name: "MUT Name",
+            description: "MUT Desc",
+            learningResourceType: "presentation",
+            classification: "unclassified",
+            keywords: "cass, competency, skills",
+            interactivityType: "active",
+            language: "English",
+            duration: "PT2H2M2S",
+            educationalUse: "assignment",
+            audience: "Group of Students",
+            author: "Test Author"
+
         }));
 
-        request.open("POST", urlPrefix+"/skyRepo/os/url/create");
+        //request.open("POST", urlPrefix+"/skyRepo/os/url/create");
+        //request.open("POST", urlPrefix+"/skyRepo/os/url/update/version");
+        request.open("POST", urlPrefix+"/skyRepo/os/update/metadata");
 
         request.onreadystatechange = function () {
             if (request.readyState==4) {
                 $('#result').html(request.responseText);
                 var json = JSON.parse(request.responseText);
+                jsonTest = JSON.parse(json.fmd);
                 documents = json.documents;
             }
         }

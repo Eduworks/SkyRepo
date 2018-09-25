@@ -105,14 +105,14 @@ function objectVersionExists(versionInfo,versionToCheck) {
     return versionExists;
 }
 
-function generateObjectVersionInfo(newVersionName,newVersionUrl) {
+function generateObjectVersionInfo(versionName,versionUrl) {
     var nvo = {};
-    nvo.versionName = newVersionName;
+    nvo.versionName = versionName;
     var d = new Date();
     nvo.dateCreated = d.toISOString();
     nvo.dateModified = d.toISOString();
-    if (newVersionUrl && newVersionUrl.trim().length > 0) {
-        nvo.newVersionUrl = newVersionUrl;
+    if (versionUrl && versionUrl.trim().length > 0) {
+        nvo.versionUrl = versionUrl;
     }
     return nvo;
 }
@@ -204,4 +204,24 @@ function isValidVersionName(newVersionName) {
         else if (newVersionName.endsWith(".")) return false;
     }
     return true;
+}
+
+function updateObjectMetdatadata(fileMetadata,name,description,learningResourceType,
+                                 classification,keywords,interactivityType,language,
+                                 duration,audience,educationalUse,author) {
+    if (fileMetadata.additionalType == srosUrlTypeObject()) fileMetadata.setName(name);
+    fileMetadata.setDescription(description)
+    fileMetadata.learningResourceType = learningResourceType;
+    fileMetadata.genre = classification;
+    fileMetadata.keywords = keywords;
+    fileMetadata.interactivityType = interactivityType;
+    fileMetadata.inLanguage = language;
+    fileMetadata.timeRequired = duration; //TODO make sure this is in ISO 8601 duration format
+    var a = new Audience();
+    a.name = audience;
+    fileMetadata.audience = a;
+    fileMetadata.educationalUse = educationalUse;
+    var p = new Person();
+    p.name = author;
+    fileMetadata.author = p;
 }
