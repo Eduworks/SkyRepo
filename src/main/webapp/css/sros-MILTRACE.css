@@ -93,24 +93,79 @@ input:checked~.switch-paddle {
 }
 
 /* ---- MISC ---- */
-.srosModalHeaderDiv {
+.deleteItem,
+.downloadItem,
+.gotoItem,
+.editItem {
+    font-size: 1.2rem;
+}
+
+.deleteItem {
+    color:#D65307;
+}
+
+.deleteItem:hover {
+    color:#D7895B;
+}
+
+.downloadItem {
+    color:#448A2C;
+}
+
+.downloadItem:hover {
+    color:#8BAF7F;
+}
+
+.gotoItem {
+    color:#AB53F9;
+}
+
+.gotoItem:hover {
+    color:#DAC5EE;
+}
+
+.srosSectionHeader {
+    color: #9A9A9A;
+}
+
+.srosModalFieldHeaderDiv {
     padding-top:.5rem;
     padding-right: 1rem;
 }
 
-.srosModalHeader {
+.srosModalFieldHeader,
+.srosModalInput,
+.srosModalErrorText,
+.srosModalBusyText {
+    font-size: .9rem;
+}
+
+.srosModalErrorText ul {
+    margin:0;
+}
+
+.srosModalFieldHeader {
     font-weight: bold;
 }
 
+.srosModalInput.invalid {
+    background-color: #F3CB7A;
+    border-color: #EA6E07;
+}
+
+#repoObjectDisplayListHeader ,
+#repoObjectDisplayList {
+    padding:.5rem;
+    margin-bottom: 0;
+}
 
 #repoObjectDisplayList {
     background-color: #EAEAEA;
-    padding:.5rem;
     border-color:#000;
     border: solid;
     border-width:1px;
     border-radius:3px;
-    min-height: 350px;
+    min-height: 400px;
     max-height: 500px;
     overflow-y: auto;
 }
@@ -123,7 +178,7 @@ input:checked~.switch-paddle {
     background-color:#CFE8FF;
 }
 
-.repoObjectDisplayListHeader {
+.srosListHeaderText {
     font-weight: bold;
     color: #656565;
 }
@@ -137,10 +192,6 @@ input:checked~.switch-paddle {
 }
 
 #srosMainPageContents{
-    margin-top:2rem;
-}
-
-#repoObjectDisplayListContainer {
     margin-top:1rem;
 }
 
@@ -162,13 +213,7 @@ input:checked~.switch-paddle {
     font-family: "Courier New", Courier, monospace;
 }
 
-.srosUiModalInput,
-.srosUiModalTextArea {
-    width: 37rem;
-    margin-left: 1.5rem;
-}
-
-.srosUiModalTextArea {
+.srosModalTextArea {
     height: 8rem;
     resize: none;
 }

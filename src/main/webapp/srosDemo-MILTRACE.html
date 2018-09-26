@@ -41,9 +41,13 @@
                 <div id="srosActionMenu" style="display:none">
                     <div class="grid-container full">
                         <div class="grid-x grid-padding-x grid-padding-y">
-                            <div class="cell medium-12">
+                            <div class="cell large-1"></div>
+                            <div class="cell large-6">
+                                <h4 class="srosSectionHeader">Repository Items</h4>
+                            </div>
+                            <div class="cell medium-5">
                                 <div id="page-tools">
-                                    <a onclick="openAddRepositoryObjectModal()" class="button small subMenuButton"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Item</a>
+                                    <a onclick="handleAddRepositoryItemClick()" class="button subMenuButton"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Item</a>
                                 </div>
                             </div>
                         </div>
@@ -95,23 +99,29 @@
 
         <!--CONTENTS-->
         <div id="srosMainPageContents"  style="display: none;">
-            <div class="grid-x">
-                <div class="cell large-1"></div>
-                <div class="cell large-10">
-                    <h4>Repository Items</h4>
-                </div>
-            </div>
             <div class="grid-x" id="repoObjectDisplayListContainer">
                 <div class="cell large-1"></div>
                 <div class="cell large-10">
-                    <ul class="fa-ul" style="margin-bottom: .3rem">
+                    <ul id="repoObjectDisplayListHeader" class="fa-ul">
                         <li>
                             <div class="grid-x">
-                                <div class="cell small-1 repoObjectDisplayListHeader">Tools</div>
-                                <div class="cell small-4 repoObjectDisplayListHeader">Name</div>
-                                <div class="cell small-1 repoObjectDisplayListHeader">Type</div>
-                                <div class="cell small-3 repoObjectDisplayListHeader">Date Created</div>
-                                <div class="cell small-3 repoObjectDisplayListHeader">Date Modified</div>
+                                <div class="cell small-1 srosListHeaderText"></div>
+                                <div class="cell small-4 srosListHeaderText">
+                                    Name
+                                    <a onclick="handleSortRepositoryItemListClick('NM')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                </div>
+                                <div class="cell small-1 srosListHeaderText">
+                                    Type
+                                    <a onclick="handleSortRepositoryItemListClick('TP')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                </div>
+                                <div class="cell small-3 srosListHeaderText">
+                                    Date Created
+                                    <a onclick="handleSortRepositoryItemListClick('DTCRT')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                </div>
+                                <div class="cell small-3 srosListHeaderText">
+                                    Date Modified
+                                    <a onclick="handleSortRepositoryItemListClick('DTMOD')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -126,28 +136,103 @@
     <div class="tiny reveal" id="modal-add-object" data-reveal>
         <h3><i class="fa fa-upload" aria-hidden="true"></i> Add Repository Object</h3>
         <div class="grid-x text-center">
-            <div class="cell medium-3 text-right srosModalHeaderDiv"><span class="srosModalHeader">Type</span></div>
-            <div class="cell medium-6">
-                <select id="maoObjType" onchange="changeAddRepositoryObjectType()">
-                    <option value="file">File</option>
+            <div class="cell medium-3 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">Type</span></div>
+            <div class="cell medium-4">
+                <select class="srosModalInput" id="maoObjType" onchange="changeAddRepositoryObjectType()">
+                    <option value="file" selected="true">File</option>
                     <option value="url">URL</option>
                 </select>
             </div>
         </div>
         <div id="maoFileTypeContainer" class="grid-x text-center">
             <div class="cell medium-3"></div>
-            <div class="cell medium-6">
-                <input type="file" id="maoObjFile"/>
+            <div class="cell medium-8">
+                <input class="srosModalInput" type="file" id="maoObjFile"/>
             </div>
         </div>
         <div id="maoUrlTypeContainer" class="grid-x text-center" style="display: none;">
-            URL TYPE STUFF HERE
+            <div class="cell medium-3 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">Name</span></div>
+            <div class="cell medium-8">
+                <input class="srosModalInput" type="text" id="maoObjName"/>
+            </div>
+            <div class="cell medium-3 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">URL</span></div>
+            <div class="cell medium-8">
+                <input class="srosModalInput" type="url" id="maoObjUrl"/>
+            </div>
+        </div>
+        <div class="grid-x text-center">
+            <div class="cell medium-3 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">Version</span></div>
+            <div class="cell medium-8">
+                <input class="srosModalInput" type="url" id="maoObjInitVers"/>
+            </div>
+            <div class="cell medium-3 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">Description</span></div>
+            <div class="cell medium-8">
+                <textarea class="srosModalTextArea srosModalInput" type="url" id="maoObjDesc"></textarea>
+            </div>
         </div>
         <div class="grid-x">
             <div class="cell medium-12">
-                <button class="button" onclick="addNewRepositoryObject();">Add</button>
+                <button class="button srosModalButton" onclick="addNewRepositoryObject();">Add</button>
                 &nbsp;&nbsp;
-                <button class="button secondary" data-close>Cancel</button>
+                <button class="button secondary srosModalButton" data-close>Cancel</button>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell srosModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="srosModalBusyText"></h5>
+                            <img class="srosUiBusyImg" src="img/loadingBlocks.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell srosModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center srosUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="srosModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-delete-object" data-reveal>
+        <h3><i class="fa fa-trash" aria-hidden="true"></i> Delete Repository Object?</h3>
+        <p>Are you sure you wish to delete the repository object <strong>'<span id="mdoObjectName"></span>'</strong>?</p>
+        <input type="hidden" id="mdoObjectId"/>
+        <div class="grid-x">
+            <div class="cell medium-12">
+                <button class="button warning srosModalButton" onclick="confirmDeleteRepositoryObject();">Delete</button>
+                &nbsp;&nbsp;
+                <button class="button secondary srosModalButton" data-close>Cancel</button>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell srosModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="srosModalBusyText"></h5>
+                            <img class="srosUiBusyImg" src="img/loadingBlocks.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell srosModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center srosUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="srosModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <button class="close-button" data-close aria-label="Close reveal" type="button">
