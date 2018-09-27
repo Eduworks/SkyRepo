@@ -9,8 +9,17 @@ body {
 
 /* ---- UTILITY ---- */
 
+.tabs a {
+    padding:.7rem 2rem;
+}
+
 .reveal.smaller {
     width: 40%;
+    max-width: 62.5rem;
+}
+
+.reveal.largish {
+    width: 60%;
     max-width: 62.5rem;
 }
 
@@ -129,8 +138,7 @@ input:checked~.switch-paddle {
 }
 
 .srosModalFieldHeaderDiv {
-    padding-top:.5rem;
-    padding-right: 1rem;
+    padding-right: .5rem;
 }
 
 .srosModalFieldHeader,
@@ -170,10 +178,38 @@ input:checked~.switch-paddle {
     overflow-y: auto;
 }
 
+#meoObjVersionListHeader,
+#meoObjVersionList {
+    padding:.5rem;
+}
+
+#meoObjVersionListHeader {
+    margin-bottom: 0;
+}
+
+#meoObjVersionList {
+    background-color: #EAEAEA;
+    border-color:#000;
+    border: solid;
+    border-width:1px;
+    border-radius:3px;
+    min-height: 250px;
+    max-height: 350px;
+    overflow-y: auto;
+    font-size: .8rem;
+}
+
+.versItemPadding {
+    padding-top:.2rem;
+    padding-left:.5rem;
+}
+
+#meoObjVersionList li,
 #repoObjectDisplayList li {
     padding-bottom: .2rem;
 }
 
+#meoObjVersionList li:hover,
 #repoObjectDisplayList li:hover {
     background-color:#CFE8FF;
 }
@@ -215,5 +251,10 @@ input:checked~.switch-paddle {
 
 .srosModalTextArea {
     height: 8rem;
+    resize: none;
+}
+
+.srosModalTextAreaShort {
+    height: 6rem;
     resize: none;
 }

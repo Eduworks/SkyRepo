@@ -27,6 +27,13 @@ const REPO_ITEM_LIST = "#repoObjectDisplayList";
 const SROS_FILE_TYPE = "file";
 const SROS_URL_TYPE = "url";
 
+const RL_SORT_NAME_FLD = "NM";
+const RL_SORT_TYPE_FLD = "TP";
+const RL_SORT_DTCRT_FLD = "DTCRT";
+const RL_SORT_DTMOD_FLD = "DTMOD";
+const RL_SORT_DIR_ASC = "ASC";
+const RL_SORT_DIR_DES = "DES";
+
 const SROS_MODAL_INPUT = ".srosModalInput";
 const SROS_MODAL_BTN = ".srosModalButton";
 const SROS_MODAL_BUSY_CTR = ".srosModalBusyCtr";
@@ -48,12 +55,21 @@ const DELETE_OBJECT_MODAL = "#modal-delete-object";
 const DO_MOD_OBJ_NAME = "#mdoObjectName";
 const DO_MOD_OBJ_ID = "#mdoObjectId";
 
-const RL_SORT_NAME_FLD = "NM";
-const RL_SORT_TYPE_FLD = "TP";
-const RL_SORT_DTCRT_FLD = "DTCRT";
-const RL_SORT_DTMOD_FLD = "DTMOD";
-const RL_SORT_DIR_ASC = "ASC";
-const RL_SORT_DIR_DES = "DES";
+const EDIT_OBJECT_MODAL = "#modal-edit-object";
+const EO_MOD_OBJ_ID = "#meoObjectId";
+const EO_MOD_OBJ_TYPE = "#meoObjectType";
+const EO_MOD_OBJ_NAME = "#meoObjName";
+const EO_MOD_OBJ_LRT = "#meoObjResType";
+const EO_MOD_OBJ_CLASSIF = "#meoObjCls";
+const EO_MOD_OBJ_DESC = "#meoObjDesc";
+const EO_MOD_OBJ_KEYWORDS = "#meoObjKeywords";
+const EO_MOD_OBJ_LANG = "#meoObjLang";
+const EO_MOD_OBJ_IAT = "#meoObjIntactType";
+const EO_MOD_OBJ_EDUSE = "#meoObjEdUse";
+const EO_MOD_OBJ_AUD = "#meoObjAud";
+const EO_MOD_OBJ_AUTH = "#meoObjAuth";
+const EO_MOD_OBJ_DUR_MINS = "#meoObjDurMins";
+const EO_MOD_OBJ_VER_LIST = "#meoObjVersionList";
 
 //**************************************************************************************************
 // Variables
@@ -63,6 +79,7 @@ var repositoryItemMap;
 
 var currentRepoListSortField = RL_SORT_DTCRT_FLD;
 var currentRepoListSortDirection = RL_SORT_DIR_DES;
+var currentEditMetadataId;
 
 //**************************************************************************************************
 // Utility
@@ -248,9 +265,238 @@ function buildUlHtmlFromStringArray(sa) {
     return ulHtml;
 }
 
+function isoDurationToMinutes(duration) {
+    var dur = moment.duration(duration, moment.ISO_8601);
+    return dur.asMinutes();
+}
+
+function minutesToIsoDuration(minutes) {
+    var dur = moment.duration(minutes,'minutes');
+    return dur.toISOString();
+}
+
+function escapeSingleQuote(str) {
+    return str.replace(/'/g, "\\'");
+}
+
+//TODO fix version return in levr
+//Search seems to return versions as an object map instead of array....
+function generateVersionArray(vers) {
+    if (vers instanceof Array) return vers;
+    //
+    var retVers = [];
+    for (var property in vers) {
+        if (vers.hasOwnProperty(property)) {
+            retVers.push(vers[property]);
+        }
+    }
+    return retVers;
+}
+
 //**************************************************************************************************
 // Modal Functions
 //**************************************************************************************************
+
+function openAddNewRepositoryItemVersionModal() {
+    //TODO implement
+    alert("TODO openAddNewRepositoryItemVersionModal");
+}
+
+function populateEditRepositoryObjectModalUsageFields(metadataId) {
+    //TODO handle object paradata
+}
+
+function populateEditRepositoryObjectModalInfoFields(metadataId) {
+    var repObj = repositoryItemMap[metadataId];
+    if (!repObj) return;
+    $(EO_MOD_OBJ_ID).val(metadataId);
+    $(EO_MOD_OBJ_TYPE).val(repObj.additionalType);
+    $(EO_MOD_OBJ_NAME).val(repObj.name);
+    $(EO_MOD_OBJ_LRT).val(repObj.learningResourceType);
+    $(EO_MOD_OBJ_CLASSIF).val(repObj.genre);
+    $(EO_MOD_OBJ_DESC).val(repObj.description);
+    $(EO_MOD_OBJ_KEYWORDS).val(repObj.keywords);
+    $(EO_MOD_OBJ_LANG).val(repObj.inLanguage);
+    $(EO_MOD_OBJ_IAT).val(repObj.interactivityType);
+    $(EO_MOD_OBJ_EDUSE).val(repObj.educationalUse);
+    if (repObj.audience && repObj.audience.name) $(EO_MOD_OBJ_AUD).val(repObj.audience.name);
+    else $(EO_MOD_OBJ_AUD).val("");
+    if (repObj.author && repObj.author.name) $(EO_MOD_OBJ_AUTH).val(repObj.author.name);
+    else $(EO_MOD_OBJ_AUTH).val("");
+    if (repObj.timeRequired && isoDurationToMinutes(repObj.timeRequired) != 0) $(EO_MOD_OBJ_DUR_MINS).val(isoDurationToMinutes(repObj.timeRequired));
+    else $(EO_MOD_OBJ_DUR_MINS).val("");
+}
+
+function deleteRepositoryItemVersion(metadataId,versionName) {
+    //TODO implement
+    alert("TODO deleteRepositoryItemVersion");
+}
+
+function editRepositoryItemVersion(metadataId,versionName) {
+    //TODO implement
+    alert("TODO editRepositoryItemVersion");
+}
+
+function getDownloadOrGotoRepItemVersionListToolLink(repObj,vi) {
+    var linkHtml = "";
+    if (repObj.additionalType == SROS_FILE_TYPE) {
+        linkHtml += "&nbsp;&nbsp;<a class=\"downloadItem\" title=\"Download Item Version:'" + vi.versionName + "'\" " +
+            "href=\"" + buildSrosDownloadLink(repObj.identifier,vi.versionName) + "\"><i class=\"fa fa-cloud-download\"></i></a>";
+    }
+    else {
+        linkHtml += "&nbsp;&nbsp;<a class=\"gotoItem\" title=\"Open Item ('" + vi.versionUrl + "')\" " +
+                "href=\"" + vi.versionUrl + "\" target=\"" + repObj.name + "\"><i class=\"fa fa-sitemap\"></i></a>";
+    }
+    return linkHtml;
+}
+
+function addRepItemVersionListLiTools(repObj,viLiDiv,vi) {
+    var viLiToolsDiv = $("<div/>");
+    viLiToolsDiv.addClass("cell small-1");
+    var viLiToolsDivHtml = "<a class=\"editItem\" title=\"Edit Version\" "+
+        "onclick=\"editRepositoryItemVersion('" + repObj.identifier + "','" + escapeSingleQuote(vi.versionName) + "')\">" +
+        "<i class=\"fa fa-book\"></i></a>";
+    viLiToolsDivHtml += "&nbsp;&nbsp;<a class=\"deleteItem\" title=\"Delete Version\" " +
+        "onclick=\"deleteRepositoryItemVersion('" + repObj.identifier + "','" + escapeSingleQuote(vi.versionName) + "')\">" +
+        "<i class=\"fa fa-trash\"></i></a>";
+    viLiToolsDivHtml += getDownloadOrGotoRepItemVersionListToolLink(repObj,vi);
+    viLiToolsDiv.html(viLiToolsDivHtml);
+    viLiDiv.append(viLiToolsDiv);
+}
+
+function addRepItemVersionListLiDetails(viLiDiv,vi) {
+    var viLiNameDiv = $("<div/>");
+    viLiNameDiv.addClass("cell small-3 versItemPadding");
+    var viLiNameDivHtml = "<span class=\"repListItemName\">" + vi.versionName + "</span>";
+    viLiNameDiv.html(viLiNameDivHtml);
+    viLiDiv.append(viLiNameDiv);
+    var viLiCreateDateDiv = $("<div/>");
+    viLiCreateDateDiv.addClass("cell small-4 versItemPadding");
+    var viLiCreateDateDivHtml = "<span class=\"repListItemDate\">" + vi.dateCreated + "</span>";
+    viLiCreateDateDiv.html(viLiCreateDateDivHtml);
+    viLiDiv.append(viLiCreateDateDiv);
+    var viLiModDateDiv = $("<div/>");
+    viLiModDateDiv.addClass("cell small-4 versItemPadding");
+    var viLiModDateDivHtml = "<span class=\"repListItemDate\">" + vi.dateModified + "</span>";
+    viLiModDateDiv.html(viLiModDateDivHtml);
+    viLiDiv.append(viLiModDateDiv);
+}
+
+function generateRepItemVersionDisplayListLi(repObj,vi) {
+    var viLi = $("<li/>");
+    var viLiDiv = $("<div/>");
+    viLiDiv.addClass("grid-x");
+    addRepItemVersionListLiTools(repObj,viLiDiv,vi);
+    addRepItemVersionListLiDetails(viLiDiv,vi);
+    viLi.append(viLiDiv);
+    return viLi;
+}
+
+function populateEditRepositoryObjectModalVersionFields(metadataId) {
+    $(EO_MOD_OBJ_VER_LIST).empty();
+    var repObj = repositoryItemMap[metadataId];
+    //var versionList = repObj.version;
+    var versionList = generateVersionArray(repObj.version);
+    //TODO default sort version list
+    for (var i=0;i<versionList.length;i++) {
+        $(EO_MOD_OBJ_VER_LIST).append(generateRepItemVersionDisplayListLi(repObj, versionList[i]));
+    }
+}
+
+function populateEditRepositoryObjectModalFields(metadataId) {
+    populateEditRepositoryObjectModalInfoFields(metadataId);
+    populateEditRepositoryObjectModalVersionFields(metadataId);
+    populateEditRepositoryObjectModalUsageFields(metadataId);
+}
+
+function getEditRepositoryObjectModalInputs() {
+    var eoInput = {};
+    eoInput.objId = $(EO_MOD_OBJ_ID).val();
+    eoInput.objName = $(EO_MOD_OBJ_NAME).val();
+    eoInput.objLrt = $(EO_MOD_OBJ_LRT).val();
+    eoInput.objClassif = $(EO_MOD_OBJ_CLASSIF).val();
+    eoInput.objDesc = $(EO_MOD_OBJ_DESC).val();
+    eoInput.objKeywords = $(EO_MOD_OBJ_KEYWORDS).val();
+    eoInput.objLang = $(EO_MOD_OBJ_LANG).val();
+    eoInput.objIat = $(EO_MOD_OBJ_IAT).val();
+    eoInput.objEdUse = $(EO_MOD_OBJ_EDUSE).val();
+    eoInput.objAud = $(EO_MOD_OBJ_AUD).val();
+    eoInput.objAuth = $(EO_MOD_OBJ_AUTH).val();
+    eoInput.objDurMins = $(EO_MOD_OBJ_DUR_MINS).val();
+    return eoInput;
+}
+
+function validateEditRepositoryObjectModalInputs(eoInput) {
+    var vo = {};
+    vo.isValid = true;
+    vo.invalidMessages = [];
+    if (!eoInput.objName || eoInput.objName.trim().length == 0) {
+        vo.isValid = false;
+        vo.invalidMessages.push("Name is required");
+        showModalInputAsInvalid(EO_MOD_OBJ_NAME);
+    }
+    if (eoInput.objDurMins && eoInput.objDurMins.trim() != "" && isNaN(eoInput.objDurMins.trim())) {
+        vo.isValid = false;
+        vo.invalidMessages.push("Duration must be a number");
+        showModalInputAsInvalid(EO_MOD_OBJ_DUR_MINS);
+    }
+    return vo;
+}
+
+function handleSaveRepositoryItemSuccess(repoItemListResponse) {
+    retrieveAndBuildRepositoryItemList();
+    hideModalBusy(EDIT_OBJECT_MODAL);
+    enableModalInputsAndButtons();
+    verifyDisabledEditRepositoryObjectFields();
+    $(EDIT_OBJECT_MODAL).foundation('close');
+}
+
+function handleSaveRepositoryItemFailure(errMsg) {
+    showModalError(EDIT_OBJECT_MODAL,errMsg);
+    verifyDisabledEditRepositoryObjectFields();
+}
+
+function saveRepositoryObjectMetadata() {
+    hideModalError(EDIT_OBJECT_MODAL);
+    var eoInput = getEditRepositoryObjectModalInputs();
+    var vo = validateEditRepositoryObjectModalInputs(eoInput);
+    if (!vo.isValid) {
+        showModalError(EDIT_OBJECT_MODAL,buildUlHtmlFromStringArray(vo.invalidMessages));
+        verifyDisabledEditRepositoryObjectFields();
+    }
+    else {
+        showModalBusy(EDIT_OBJECT_MODAL,"Saving repository object...");
+        //console.log(eoInput);
+        var isoDur = "";
+        if (eoInput.objDurMins && eoInput.objDurMins.trim() != "" && !isNaN(eoInput.objDurMins.trim())) {
+            isoDur = minutesToIsoDuration(eoInput.objDurMins * 1);
+        }
+        updateRepositoryObjectMetadata(eoInput.objId,eoInput.objName,eoInput.objDesc,eoInput.objLrt,
+            eoInput.objClassif,eoInput.objKeywords,eoInput.objIat,eoInput.objLang,
+            isoDur,eoInput.objAud,eoInput.objEdUse,eoInput.objAuth,
+            handleSaveRepositoryItemSuccess,handleSaveRepositoryItemFailure);
+    }
+}
+
+function verifyDisabledEditRepositoryObjectFields() {
+    $(EO_MOD_OBJ_TYPE).attr("disabled", "true");
+    var repObj = repositoryItemMap[currentEditMetadataId];
+    if (repObj) {
+        if (repObj.additionalType == SROS_FILE_TYPE) $(EO_MOD_OBJ_NAME).attr("disabled", "true");
+        else $(EO_MOD_OBJ_NAME).removeAttr("disabled");
+    }
+}
+
+function openEditRepositoryObjectModal(metadataId,refreshData) {
+    enableModalInputsAndButtons();
+    currentEditMetadataId = metadataId;
+    hideModalBusy(EDIT_OBJECT_MODAL);
+    hideModalError(EDIT_OBJECT_MODAL);
+    var repObj = repositoryItemMap[metadataId];
+    if (refreshData) populateEditRepositoryObjectModalFields(metadataId);
+    verifyDisabledEditRepositoryObjectFields();
+    $(EDIT_OBJECT_MODAL).foundation('open');
+}
 
 function handleDeleteEntireRepositoryObjectResponseSuccess() {
     retrieveAndBuildRepositoryItemList();
@@ -396,6 +642,11 @@ function changeAddRepositoryObjectType() {
 // Misc. Click Handlers
 //**************************************************************************************************
 
+function handleSortRepositoryItemVersionListClick(sortField) {
+    //TODO implement
+    alert("TODO handleSortRepositoryItemVersionListClick");
+}
+
 function handleSortRepositoryItemListClick(sortField) {
     if (sortField == currentRepoListSortField) {
         if (currentRepoListSortDirection == RL_SORT_DIR_ASC) currentRepoListSortDirection = RL_SORT_DIR_DES;
@@ -450,8 +701,8 @@ function deleteEntireRepositoryItem(metadataId) {
     openDeleteRepositoryObjectConfirmModal(metadataId);
 }
 
-function editEntireRepositoryItem(metadataId) {
-    alert("TODO editEntireRepositoryItem: " + metadataId);
+function editRepositoryItem(metadataId) {
+    openEditRepositoryObjectModal(metadataId,true);
 }
 
 function getDownloadOrGotoRepItemListToolLink(ri) {
@@ -474,7 +725,7 @@ function getDownloadOrGotoRepItemListToolLink(ri) {
 function addRepositoryItemDisplayListLiTools(riLiDiv,ri) {
     var riLiToolsDiv = $("<div/>");
     riLiToolsDiv.addClass("cell small-1");
-    var riLiToolsDivHtml = "<a class=\"editItem\" title=\"Edit Item\" onclick=\"editEntireRepositoryItem('" + ri.identifier + "')\">" +
+    var riLiToolsDivHtml = "<a class=\"editItem\" title=\"Edit Item\" onclick=\"editRepositoryItem('" + ri.identifier + "')\">" +
         "<i class=\"fa fa-book\"></i></a>";
     riLiToolsDivHtml += "&nbsp;&nbsp;<a class=\"deleteItem\" title=\"Delete Item\" onclick=\"deleteEntireRepositoryItem('" + ri.identifier + "')\">" +
         "<i class=\"fa fa-trash\"></i></a>";

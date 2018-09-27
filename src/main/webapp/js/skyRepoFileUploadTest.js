@@ -33,9 +33,8 @@ function doLoad() {
         }
 
         formData.append("srosData", JSON.stringify({
-            updateVersion: "new3-test-3",
-            metadataId: "http://localhost:8080/api/data/schema.org.CreativeWork/0fb5f57e-e6a6-46fe-a2c9-806793f689c1"
-
+            updateVersion: "release-version-1",
+            metadataId: "http://localhost:8080/api/data/schema.org.CreativeWork/86d1e80a-06ac-4e07-aa7c-3a3609132693"
             // initialVersion:"new3-test-1",
             // objectOwner: "TOM TEST"
 

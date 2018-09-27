@@ -239,10 +239,171 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+
+
+    <div class="largish reveal" id="modal-edit-object" data-reveal>
+        <h3><i class="fa fa-info-circle" aria-hidden="true"></i> Edit Repository Object</h3>
+        <input type="hidden" id="meoObjectId"/>
+        <ul class="tabs" data-tabs id="meo-tabs">
+            <li class="tabs-title is-active"><a data-tabs-target="meoObjInfoTab" aria-selected="true">Information</a></li>
+            <li class="tabs-title"><a data-tabs-target="meoObjVersionTab">Versions</a></li>
+            <li class="tabs-title"><a data-tabs-target="meoObjUsageTab">Usage</a></li>
+        </ul>
+        <div class="tabs-content" data-tabs-content="meo-tabs">
+            <div class="tabs-panel is-active" id="meoObjInfoTab">
+                <div class="grid-x" >
+                    <div class="cell medium-6">
+                        <div class="grid-x" >
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object name"><span class="srosModalFieldHeader">Name</span></div>
+                            <div class="cell medium-8">
+                                <input class="srosModalInput" type="text" id="meoObjName"/>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object description"><span class="srosModalFieldHeader">Description</span></div>
+                            <div class="cell medium-8">
+                                <textarea class="srosModalTextArea srosModalInput" type="url" id="meoObjDesc"></textarea>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object's security classification"><span class="srosModalFieldHeader">Classification</span></div>
+                            <div class="cell medium-8">
+                                <select class="srosModalInput" id="meoObjCls">
+                                    <option value="unclassified">Unclassified</option>
+                                    <option value="publictrust">Public Trust</option>
+                                    <option value="confidential">Confidential</option>
+                                    <option value="secret">Secret</option>
+                                    <option value="topsecret">Top Secret</option>
+                                </select>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Predominant type or kind characterizing the object. For example, 'presentation', 'handout'.">
+                                <span class="srosModalFieldHeader">Resource Type</span>
+                            </div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjResType" placeholder="'presentation', 'handout', etc"/></div>
+
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Purpose of the object in the context of education; for example, 'assignment', 'group work'.">
+                                <span class="srosModalFieldHeader">Educational Use</span>
+                            </div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjEdUse" placeholder="'assignment', 'group work', etc"/></div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object author name or ID">
+                                <span class="srosModalFieldHeader">Author</span>
+                            </div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjAuth"/></div>
+                        </div>
+                    </div>
+                    <div class="cell medium-6">
+                        <div class="grid-x" >
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object type (file or URL)"><span class="srosModalFieldHeader">Object Type</span></div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjectType"/></div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Comma seperated list of object key words"><span class="srosModalFieldHeader">Key Words</span></div>
+                            <div class="cell medium-8">
+                                <textarea class="srosModalTextArea srosModalInput" type="url" id="meoObjKeywords" placeholder="Comma seperated list of values"></textarea>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object language"><span class="srosModalFieldHeader">Language</span></div>
+                            <div class="cell medium-8">
+                                <input class="srosModalInput" type="text" id="meoObjLang" placeholder="'english', 'spanish', etc"/>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Predominant mode of learning supported by the object.">
+                                <span class="srosModalFieldHeader">Interactivity Type</span>
+                            </div>
+                            <div class="cell medium-8">
+                                <select class="srosModalInput" id="meoObjIntactType">
+                                    <option value="active">Active</option>
+                                    <option value="expositive">Expositive</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </div>
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object's intended audience">
+                                <span class="srosModalFieldHeader">Audience</span>
+                            </div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjAud" placeholder="'A-school', 'journeymen', etc"/></div>
+
+                            <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object duration (in minutes)">
+                                <span class="srosModalFieldHeader">Duration (minutes)</span>
+                            </div>
+                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjDurMins"/></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="cell medium-12">
+                        <button class="button srosModalButton" onclick="saveRepositoryObjectMetadata();">Save</button>
+                        &nbsp;&nbsp;
+                        <button class="button secondary srosModalButton" data-close>Cancel</button>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="cell srosModalBusyCtr" style="display:none">
+                        <div class="grid-container">
+                            <div class="grid-x grid-padding-x grid-padding-y">
+                                <div class="cell medium-12 text-center">
+                                    <h5 class="srosModalBusyText"></h5>
+                                    <img class="srosUiBusyImg" src="img/loadingBlocks.gif" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell srosModalErrorCtr" style="display:none">
+                        <div class="grid-container">
+                            <div class="grid-x grid-padding-x grid-padding-y">
+                                <div class="cell medium-12 text-center srosUiError">
+                                    <h5><i class="fa fa-exclamation-triangle"></i> <span class="srosModalErrorText"></span></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tabs-content" data-tabs-content="meo-tabs">
+            <div class="tabs-panel" id="meoObjVersionTab">
+                <div class="grid-x">
+                    <div class="cell small-12">
+                        <ul id="meoObjVersionListHeader" class="fa-ul">
+                            <li>
+                                <div class="grid-x">
+                                    <div class="cell small-1 srosListHeaderText"></div>
+                                    <div class="cell small-3 srosListHeaderText">
+                                        Version
+                                        <a onclick="handleSortRepositoryItemVersionListClick('VN')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                    </div>
+                                    <div class="cell small-4 srosListHeaderText">
+                                        Date Created
+                                        <a onclick="handleSortRepositoryItemVersionListClick('VDTCRT')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                    </div>
+                                    <div class="cell small-4 srosListHeaderText">
+                                        Date Modified
+                                        <a onclick="handleSortRepositoryItemVersionListClick('VDTMOD')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="cell small-12">
+                        <ul id="meoObjVersionList" class="fa-ul"></ul>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="cell small-12">
+                        <button class="button srosModalButton" onclick="openAddNewRepositoryItemVersionModal();">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Version
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tabs-content" data-tabs-content="meo-tabs">
+            <div class="tabs-panel" id="meoObjUsageTab">
+                Under development
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     <!-- END MODAL WINDOWS -->
 
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/foundation.js"></script>
+    <script src="js/vendor/moment.min.js"></script>
     <script src="js/srosDemoServices.js"></script>
     <script src="js/srosDemo.js"></script>
 
