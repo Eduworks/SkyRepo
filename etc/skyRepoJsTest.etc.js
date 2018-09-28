@@ -177,3 +177,16 @@ function creativeWorkSearch2() {
 }
 
 bindWebService("/skyRepo/test/search/creativeWork2", creativeWorkSearch2);
+
+
+function testVersionValidity() {
+    var versionName = getParameter(this,"versionName");
+    var isValid = isValidVersionName(versionName);
+    return displayJson.call(this, {
+        status: "test",
+        versionName: versionName,
+        isValid: isValid
+    });;
+}
+
+bindWebService("/skyRepo/test/version", testVersionValidity);

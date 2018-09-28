@@ -102,11 +102,16 @@ input:checked~.switch-paddle {
 }
 
 /* ---- MISC ---- */
+.cantDeleteItem,
 .deleteItem,
 .downloadItem,
 .gotoItem,
 .editItem {
     font-size: 1.2rem;
+}
+
+.cantDeleteItem {
+    color:#bbb;
 }
 
 .deleteItem {
@@ -225,6 +230,10 @@ input:checked~.switch-paddle {
 
 .repListItemDate {
     font-style: italic;
+}
+
+.repListItemUrl {
+    color:#9B9B9B;
 }
 
 #srosMainPageContents{

@@ -54,7 +54,7 @@ function isGoodSrosServiceResponse(responseJson) {
 
 function getSrosServiceResponseError(responseJson) {
     var errMsg = "Could not find service response error message!";
-    if (!responseJson.error) {
+    if (responseJson.error) {
         errMsg = responseJson.error;
     }
     return errMsg;
@@ -119,11 +119,11 @@ function handleUpdateRepositoryObjectFileVersionResponse(responseJson,success,fa
     else failure(getSrosServiceResponseError(responseJson));
 }
 
-function updateRepositoryObjectFileVersion(file,udpateVersion,metadataId,success,failure) {
+function updateRepositoryObjectFileVersion(file,updateVersion,metadataId,success,failure) {
     var formData = new FormData();
     formData.append(file.name,file);
     formData.append(SROS_FORM_DATA_NAME, JSON.stringify({
-        udpateVersion: udpateVersion,
+        updateVersion: updateVersion,
         metadataId: metadataId
     }));
     executeSrosService(SROS_UPDATE_FILE_ITEM_VERSION_SERVICE,formData,handleUpdateRepositoryObjectFileVersionResponse,success,failure);
@@ -137,11 +137,11 @@ function handleUpdateRepositoryObjectUrlVersionResponse(responseJson,success,fai
     else failure(getSrosServiceResponseError(responseJson));
 }
 
-function updateRepositoryObjectUrlVersion(versionUrl,udpateVersion,metadataId,success,failure) {
+function updateRepositoryObjectUrlVersion(versionUrl,updateVersion,metadataId,success,failure) {
     var formData = new FormData();
     formData.append(SROS_FORM_DATA_NAME, JSON.stringify({
         versionUrl: versionUrl,
-        udpateVersion: udpateVersion,
+        updateVersion: updateVersion,
         metadataId: metadataId
     }));
     executeSrosService(SROS_UPDATE_URL_ITEM_VERSION_SERVICE,formData,handleUpdateRepositoryObjectUrlVersionResponse,success,failure);
