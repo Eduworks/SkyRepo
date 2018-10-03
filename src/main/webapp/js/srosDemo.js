@@ -82,6 +82,21 @@ const AV_MOD_VER_FILE = "#mavVerFile";
 const AV_MOD_VER_URL_CTR = "#mavUrlTypeContainer";
 const AV_MOD_VER_URL = "#mavVerUrl";
 
+const DELETE_OBJECT_VER_MODAL = "#modal-delete-version";
+const DV_MOD_OBJ_NAME = "#mdvObjectName";
+const DV_MOD_VER_NAME_DISP = "#mdvVersionNameDisp";
+const DV_MOD_OBJ_ID = "#mdvObjectId";
+const DV_MOD_VER_NAME = "#mdvVersionName";
+
+const EDIT_OBJECT_VER_MODAL = "#modal-edit-object-version";
+const EV_MOD_OBJ_ID = "#mevObjId";
+const EV_MOD_OBJ_TYPE = "#mevObjType";
+const EV_MOD_VER_NAME = "#mevVerName";
+const EV_MOD_VER_FILE_CTR = "#mevFileTypeContainer";
+const EV_MOD_VER_FILE = "#mevVerFile";
+const EV_MOD_VER_URL_CTR = "#mevUrlTypeContainer";
+const EV_MOD_VER_URL = "#mevVerUrl";
+
 //**************************************************************************************************
 // Variables
 
@@ -342,6 +357,145 @@ function replaceRepositoryItem(metadataId,newRepObj) {
 //**************************************************************************************************
 // Modal Functions
 //**************************************************************************************************
+function populateEditRepositoryObjectModalUsageFields(metadataId) {
+    //TODO handle object paradata
+}
+
+function cancelEditRepositoryObjectVersion() {
+    openEditRepositoryObjectModal(currentEditMetadataId,false);
+}
+
+function getEditRepositoryObjectVersionModalInputs() {
+    var evInput = {};
+    evInput.objId = $(EV_MOD_OBJ_ID).val();
+    evInput.objType = $(EV_MOD_OBJ_TYPE).val();
+    evInput.verName = $(EV_MOD_VER_NAME).val();
+    if ($(EV_MOD_VER_FILE).prop('files') && $(EV_MOD_VER_FILE).prop('files').length >= 1) {
+        evInput.verFile = $(EV_MOD_VER_FILE).prop('files')[0];
+    }
+    evInput.verUrl = $(EV_MOD_VER_URL).val();
+    return evInput;
+}
+
+function validateEditRepositoryObjectVersionModalInputs(evInput) {
+    var vo = {};
+    vo.isValid = true;
+    vo.invalidMessages = [];
+    if (!evInput.verName || evInput.verName.trim().length == 0) {
+        vo.isValid = false;
+        vo.invalidMessages.push("Version Name is required");
+        showModalInputAsInvalid(EV_MOD_VER_NAME);
+    }
+    else if (!isValidVersionName(evInput.verName)) {
+        vo.isValid = false;
+        vo.invalidMessages.push("Invalid version name");
+        showModalInputAsInvalid(EV_MOD_VER_NAME);
+    }
+    if (evInput.objType == SROS_FILE_TYPE) {
+        if (!evInput.verFile) {
+            vo.isValid = false;
+            vo.invalidMessages.push("No file selected");
+        }
+    }
+    else {
+        if (!evInput.verUrl || evInput.verUrl.trim().length == 0) {
+            vo.isValid = false;
+            vo.invalidMessages.push("URL is required");
+            showModalInputAsInvalid(EV_MOD_VER_URL);
+        }
+        else if (!isValidUrl(evInput.verUrl)) {
+            vo.isValid = false;
+            vo.invalidMessages.push("Invalid URL");
+            showModalInputAsInvalid(EV_MOD_VER_URL);
+        }
+    }
+    return vo;
+}
+
+function saveEditRepositoryObjectVersion() {
+    hideModalError(EDIT_OBJECT_VER_MODAL);
+    var evInput = getEditRepositoryObjectVersionModalInputs();
+    var vo = validateEditRepositoryObjectVersionModalInputs(evInput);
+    if (!vo.isValid) showModalError(EDIT_OBJECT_VER_MODAL,buildUlHtmlFromStringArray(vo.invalidMessages));
+    else {
+        showModalBusy(EDIT_OBJECT_VER_MODAL,"Editing version...");
+        if (evInput.objType == SROS_FILE_TYPE) {
+            updateRepositoryObjectFileVersion(evInput.verFile,evInput.verName,evInput.objId,
+                handleUpdateRepositoryObjectVersionResponseSuccess,handleUpdateRepositoryObjectVersionResponseFailure);
+        }
+        else {
+            updateRepositoryObjectUrlVersion(evInput.verUrl,evInput.verName,evInput.objId,
+                handleUpdateRepositoryObjectVersionResponseSuccess,handleUpdateRepositoryObjectVersionResponseFailure);
+        }
+    }
+}
+
+function clearEditRepositoryObjectVersionModalInputs() {
+    $(EV_MOD_VER_FILE).val("");
+    $(EV_MOD_VER_NAME).val("");
+    $(EV_MOD_VER_URL).val("");
+}
+
+function editRepositoryItemVersion(metadataId,versionName) {
+    clearEditRepositoryObjectVersionModalInputs();
+    enableModalInputsAndButtons();
+    hideModalBusy(EDIT_OBJECT_VER_MODAL);
+    hideModalError(EDIT_OBJECT_VER_MODAL);
+    var repObj = repositoryItemMap[metadataId];
+    $(EV_MOD_OBJ_ID).val(metadataId);
+    $(EV_MOD_OBJ_TYPE).val(repObj.additionalType);
+    $(EV_MOD_VER_NAME).val(versionName);
+    if (repObj.additionalType == SROS_FILE_TYPE) {
+        $(EV_MOD_VER_URL_CTR).hide();
+        $(EV_MOD_VER_FILE_CTR).show();
+    }
+    else {
+        $(EV_MOD_VER_FILE_CTR).hide();
+        $(EV_MOD_VER_URL_CTR).show();
+    }
+    $(EDIT_OBJECT_VER_MODAL).foundation('open');
+}
+
+function cancelDeleteRepositoryObjectVersion() {
+    openEditRepositoryObjectModal(currentEditMetadataId,false);
+}
+
+function handleDeleteRepositoryObjectVersionSuccess(resObj) {
+    var metadataId = resObj.identifier;
+    replaceRepositoryItem(metadataId,resObj);
+    populateEditRepositoryObjectModalVersionFields(metadataId);
+    retrieveAndBuildRepositoryItemList();
+    hideModalBusy(DELETE_OBJECT_VER_MODAL);
+    enableModalInputsAndButtons();
+    openEditRepositoryObjectModal(metadataId,false);
+}
+
+function handleDeleteRepositoryObjectVersionFailure(errMsg) {
+    showModalError(DELETE_OBJECT_VER_MODAL,errMsg);
+}
+
+function confirmDeleteRepositoryObjectVersion() {
+    var metadataId = $(DV_MOD_OBJ_ID).val();
+    var versionName = $(DV_MOD_VER_NAME).val();
+    var repObj = repositoryItemMap[metadataId];
+    var va = generateVersionArray(repObj.version);
+    if (va.length > 1) {
+        showModalBusy(DELETE_OBJECT_VER_MODAL,"Deleting version...");
+        deleteRepositoryObjectVersion(metadataId,versionName,handleDeleteRepositoryObjectVersionSuccess,handleDeleteRepositoryObjectVersionFailure);
+    }
+    else {
+        showModalError(DELETE_OBJECT_VER_MODAL,"Cannot delete last object version");
+    }
+}
+
+function deleteRepositoryItemVersion(metadataId,versionName) {
+    var repObj = repositoryItemMap[metadataId];
+    $(DV_MOD_OBJ_NAME).html(repObj.name);
+    $(DV_MOD_VER_NAME_DISP).html(versionName);
+    $(DV_MOD_OBJ_ID).val(metadataId);
+    $(DV_MOD_VER_NAME).val(versionName);
+    $(DELETE_OBJECT_VER_MODAL).foundation('open');
+}
 
 function getAddRepositoryObjectVersionModalInputs() {
     var avInput = {};
@@ -388,6 +542,10 @@ function validateAddRepositoryObjectVersionModalInputs(avInput) {
         }
     }
     return vo;
+}
+
+function cancelNewRepositoryObjectVersion() {
+    openEditRepositoryObjectModal(currentEditMetadataId,false);
 }
 
 function handleUpdateRepositoryObjectVersionResponseSuccess(resObj) {
@@ -447,20 +605,6 @@ function openAddNewRepositoryItemVersionModal() {
         $(AV_MOD_VER_URL_CTR).show();
     }
     $(ADD_OBJECT_VER_MODAL).foundation('open');
-}
-
-function deleteRepositoryItemVersion(metadataId,versionName) {
-    //TODO implement
-    alert("TODO deleteRepositoryItemVersion");
-}
-
-function editRepositoryItemVersion(metadataId,versionName) {
-    //TODO implement
-    alert("TODO editRepositoryItemVersion");
-}
-
-function populateEditRepositoryObjectModalUsageFields(metadataId) {
-    //TODO handle object paradata
 }
 
 function populateEditRepositoryObjectModalInfoFields(metadataId) {

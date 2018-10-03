@@ -289,7 +289,7 @@
                     <div class="cell medium-6">
                         <div class="grid-x" >
                             <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Object type (file or URL)"><span class="srosModalFieldHeader">Object Type</span></div>
-                            <div class="cell medium-8"><input class="srosModalInput" type="text" id="meoObjectType"/></div>
+                            <div class="cell medium-8"><input class="srosModalInputDisabled" type="text" id="meoObjectType" disabled/></div>
                             <div class="cell medium-4 text-right srosModalFieldHeaderDiv" title="Comma seperated list of object key words"><span class="srosModalFieldHeader">Key Words</span></div>
                             <div class="cell medium-8">
                                 <textarea class="srosModalTextArea srosModalInput" id="meoObjKeywords" placeholder="Comma seperated list of values"></textarea>
@@ -425,7 +425,100 @@
             <div class="cell medium-12">
                 <button class="button warning srosModalButton" onclick="saveNewRepositoryObjectVersion();">Save</button>
                 &nbsp;&nbsp;
-                <button class="button secondary srosModalButton" data-close>Cancel</button>
+                <button class="button secondary srosModalButton" onclick="cancelNewRepositoryObjectVersion();">Cancel</button>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell srosModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="srosModalBusyText"></h5>
+                            <img class="srosUiBusyImg" src="img/loadingBlocks.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell srosModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center srosUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="srosModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-edit-object-version" data-reveal>
+        <h3><i class="fa fa-code-fork" aria-hidden="true"></i> Edit Repository Object Version</h3>
+        <input type="hidden" id="mevObjId"/>
+        <input type="hidden" id="mevObjType"/>
+        <div class="grid-x text-center">
+            <div class="cell medium-4 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">Version Name</span></div>
+            <div class="cell medium-7">
+                <input class="srosModalInputDisabled" type="text" id="mevVerName" disabled/>
+            </div>
+        </div>
+        <div id="mevFileTypeContainer" class="grid-x text-center" style="display: none;">
+            <div class="cell medium-4"></div>
+            <div class="cell medium-8">
+                <input class="srosModalInput" type="file" id="mevVerFile"/>
+            </div>
+        </div>
+        <div id="mevUrlTypeContainer" class="grid-x text-center" style="display: none;">
+            <div class="cell medium-4 text-right srosModalFieldHeaderDiv"><span class="srosModalFieldHeader">URL</span></div>
+            <div class="cell medium-7">
+                <input class="srosModalInput" type="text" id="mevVerUrl"/>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell medium-12">
+                <button class="button warning srosModalButton" onclick="saveEditRepositoryObjectVersion();">Save</button>
+                &nbsp;&nbsp;
+                <button class="button secondary srosModalButton" onclick="cancelEditRepositoryObjectVersion();">Cancel</button>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell srosModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="srosModalBusyText"></h5>
+                            <img class="srosUiBusyImg" src="img/loadingBlocks.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell srosModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center srosUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="srosModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-delete-version" data-reveal>
+        <h3><i class="fa fa-trash" aria-hidden="true"></i> Delete Repository Object?</h3>
+        <p>Are you sure you wish to delete the repository object:version <strong>'<span id="mdvObjectName"></span>:<span id="mdvVersionNameDisp"></span>'</strong>?</p>
+        <input type="hidden" id="mdvObjectId"/>
+        <input type="hidden" id="mdvVersionName"/>
+        <div class="grid-x">
+            <div class="cell medium-12">
+                <button class="button warning srosModalButton" onclick="confirmDeleteRepositoryObjectVersion();">Delete</button>
+                &nbsp;&nbsp;
+                <button class="button secondary srosModalButton" onclick="cancelDeleteRepositoryObjectVersion();">Cancel</button>
             </div>
         </div>
         <div class="grid-x">

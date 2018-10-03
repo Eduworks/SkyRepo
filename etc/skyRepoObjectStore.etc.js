@@ -67,6 +67,7 @@ function deleteRepositoryItemVersion() {
     if (vo.isValid) {
         var result = null;
         removeObjectVersion(fmd,deleteVersion);
+        touchRepositoryObjectModifiedDate(fmd);
         result = saveFileObjectMetadata(this,fmd);
         return result;
     }

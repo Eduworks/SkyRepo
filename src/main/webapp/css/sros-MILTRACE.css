@@ -148,6 +148,7 @@ input:checked~.switch-paddle {
 
 .srosModalFieldHeader,
 .srosModalInput,
+.srosModalInputDisabled,
 .srosModalErrorText,
 .srosModalBusyText {
     font-size: .9rem;
