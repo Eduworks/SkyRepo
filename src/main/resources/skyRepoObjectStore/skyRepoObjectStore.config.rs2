@@ -3,7 +3,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //=========================================================
-// Application Settings - Not safe/easy to change
+// Application Settings - Safe/easy to change
 //=========================================================
 
 rootSkyRepoObjectStoreLocation = #string(str="/usr/share/mos/MLR_Storage_Root");
@@ -12,6 +12,10 @@ rootSkyRepoObjectStoreLocation = #string(str="/usr/share/mos/MLR_Storage_Root");
 skyRepoObjectStorePostDataName = #string(str="srosData");
 #srosPostDataName = skyRepoObjectStorePostDataName;
 
+//=========================================================
+// Application Settings - Not safe/easy to change
+//=========================================================
+
 skyRepoFileTypeObject = #string(str="file");
 #srosFileTypeObject = skyRepoFileTypeObject;
 
@@ -19,7 +23,7 @@ skyRepoUrlTypeObject = #string(str="url");
 #srosUrlTypeObject = skyRepoUrlTypeObject;
 
 //=========================================================
-// Multipart Post Object Building
+// Multipart Post Object Building - Should not change
 //=========================================================
 
 getMultipartPostData = #getFileFromPost(name="@field").fileToString();
