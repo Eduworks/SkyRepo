@@ -6,7 +6,7 @@
 // Application Settings - Not safe/easy to change
 //=========================================================
 
-rootSkyRepoObjectStoreLocation = #string(str="E:\TomsWork\CurrentProjects\MLR_Storage_Root");
+rootSkyRepoObjectStoreLocation = #string(str="/usr/share/mos/MLR_Storage_Root");
 #srosObjectStoreLocation = rootSkyRepoObjectStoreLocation;
 
 skyRepoObjectStorePostDataName = #string(str="srosData");
